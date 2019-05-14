@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liwj.szpd.mapper.ProjectFinanceMapper">
+  <resultMap id="BaseResultMap" type="com.liwj.szpd.model.ProjectFinance">
+    <constructor>
+      <idArg column="ID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="REVISION" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="CREATED_BY" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="CREATED_TIME" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="UPDATED_BY" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="UPDATED_TIME" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="INVOICE" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="ARRIVAL" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="NO_ARRIVAL" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="STEP_ARRIVAl" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="DEBT" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="PROJECT_ID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, REVISION, CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, INVOICE, ARRIVAL, 
+    NO_ARRIVAL, STEP_ARRIVAl, DEBT, PROJECT_ID
+  </sql>
+  <select id="selectByExample" parameterType="com.liwj.szpd.model.ProjectFinanceExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from PROJECT_FINANCE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from PROJECT_FINANCE
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from PROJECT_FINANCE
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.liwj.szpd.model.ProjectFinanceExample">
+    delete from PROJECT_FINANCE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.liwj.szpd.model.ProjectFinance">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into PROJECT_FINANCE (REVISION, CREATED_BY, CREATED_TIME, 
+      UPDATED_BY, UPDATED_TIME, INVOICE, 
+      ARRIVAL, NO_ARRIVAL, STEP_ARRIVAl, 
+      DEBT, PROJECT_ID)
+    values (#{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=INTEGER}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=INTEGER}, #{updatedTime,jdbcType=TIMESTAMP}, #{invoice,jdbcType=DECIMAL}, 
+      #{arrival,jdbcType=DECIMAL}, #{noArrival,jdbcType=DECIMAL}, #{stepArrival,jdbcType=DECIMAL}, 
+      #{debt,jdbcType=DECIMAL}, #{projectId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.liwj.szpd.model.ProjectFinance">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into PROJECT_FINANCE
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="revision != null">
+        REVISION,
+      </if>
+      <if test="createdBy != null">
+        CREATED_BY,
+      </if>
+      <if test="createdTime != null">
+        CREATED_TIME,
+      </if>
+      <if test="updatedBy != null">
+        UPDATED_BY,
+      </if>
+      <if test="updatedTime != null">
+        UPDATED_TIME,
+      </if>
+      <if test="invoice != null">
+        INVOICE,
+      </if>
+      <if test="arrival != null">
+        ARRIVAL,
+      </if>
+      <if test="noArrival != null">
+        NO_ARRIVAL,
+      </if>
+      <if test="stepArrival != null">
+        STEP_ARRIVAl,
+      </if>
+      <if test="debt != null">
+        DEBT,
+      </if>
+      <if test="projectId != null">
+        PROJECT_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="revision != null">
+        #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=INTEGER},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="invoice != null">
+        #{invoice,jdbcType=DECIMAL},
+      </if>
+      <if test="arrival != null">
+        #{arrival,jdbcType=DECIMAL},
+      </if>
+      <if test="noArrival != null">
+        #{noArrival,jdbcType=DECIMAL},
+      </if>
+      <if test="stepArrival != null">
+        #{stepArrival,jdbcType=DECIMAL},
+      </if>
+      <if test="debt != null">
+        #{debt,jdbcType=DECIMAL},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.liwj.szpd.model.ProjectFinanceExample" resultType="java.lang.Long">
+    select count(*) from PROJECT_FINANCE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update PROJECT_FINANCE
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.revision != null">
+        REVISION = #{record.revision,jdbcType=INTEGER},
+      </if>
+      <if test="record.createdBy != null">
+        CREATED_BY = #{record.createdBy,jdbcType=INTEGER},
+      </if>
+      <if test="record.createdTime != null">
+        CREATED_TIME = #{record.createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updatedBy != null">
+        UPDATED_BY = #{record.updatedBy,jdbcType=INTEGER},
+      </if>
+      <if test="record.updatedTime != null">
+        UPDATED_TIME = #{record.updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.invoice != null">
+        INVOICE = #{record.invoice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.arrival != null">
+        ARRIVAL = #{record.arrival,jdbcType=DECIMAL},
+      </if>
+      <if test="record.noArrival != null">
+        NO_ARRIVAL = #{record.noArrival,jdbcType=DECIMAL},
+      </if>
+      <if test="record.stepArrival != null">
+        STEP_ARRIVAl = #{record.stepArrival,jdbcType=DECIMAL},
+      </if>
+      <if test="record.debt != null">
+        DEBT = #{record.debt,jdbcType=DECIMAL},
+      </if>
+      <if test="record.projectId != null">
+        PROJECT_ID = #{record.projectId,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update PROJECT_FINANCE
+    set ID = #{record.id,jdbcType=INTEGER},
+      REVISION = #{record.revision,jdbcType=INTEGER},
+      CREATED_BY = #{record.createdBy,jdbcType=INTEGER},
+      CREATED_TIME = #{record.createdTime,jdbcType=TIMESTAMP},
+      UPDATED_BY = #{record.updatedBy,jdbcType=INTEGER},
+      UPDATED_TIME = #{record.updatedTime,jdbcType=TIMESTAMP},
+      INVOICE = #{record.invoice,jdbcType=DECIMAL},
+      ARRIVAL = #{record.arrival,jdbcType=DECIMAL},
+      NO_ARRIVAL = #{record.noArrival,jdbcType=DECIMAL},
+      STEP_ARRIVAl = #{record.stepArrival,jdbcType=DECIMAL},
+      DEBT = #{record.debt,jdbcType=DECIMAL},
+      PROJECT_ID = #{record.projectId,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.liwj.szpd.model.ProjectFinance">
+    update PROJECT_FINANCE
+    <set>
+      <if test="revision != null">
+        REVISION = #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        CREATED_BY = #{createdBy,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        UPDATED_BY = #{updatedBy,jdbcType=INTEGER},
+      </if>
+      <if test="updatedTime != null">
+        UPDATED_TIME = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="invoice != null">
+        INVOICE = #{invoice,jdbcType=DECIMAL},
+      </if>
+      <if test="arrival != null">
+        ARRIVAL = #{arrival,jdbcType=DECIMAL},
+      </if>
+      <if test="noArrival != null">
+        NO_ARRIVAL = #{noArrival,jdbcType=DECIMAL},
+      </if>
+      <if test="stepArrival != null">
+        STEP_ARRIVAl = #{stepArrival,jdbcType=DECIMAL},
+      </if>
+      <if test="debt != null">
+        DEBT = #{debt,jdbcType=DECIMAL},
+      </if>
+      <if test="projectId != null">
+        PROJECT_ID = #{projectId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.liwj.szpd.model.ProjectFinance">
+    update PROJECT_FINANCE
+    set REVISION = #{revision,jdbcType=INTEGER},
+      CREATED_BY = #{createdBy,jdbcType=INTEGER},
+      CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      UPDATED_BY = #{updatedBy,jdbcType=INTEGER},
+      UPDATED_TIME = #{updatedTime,jdbcType=TIMESTAMP},
+      INVOICE = #{invoice,jdbcType=DECIMAL},
+      ARRIVAL = #{arrival,jdbcType=DECIMAL},
+      NO_ARRIVAL = #{noArrival,jdbcType=DECIMAL},
+      STEP_ARRIVAl = #{stepArrival,jdbcType=DECIMAL},
+      DEBT = #{debt,jdbcType=DECIMAL},
+      PROJECT_ID = #{projectId,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

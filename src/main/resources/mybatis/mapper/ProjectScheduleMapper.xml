@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liwj.szpd.mapper.ProjectScheduleMapper">
+  <resultMap id="BaseResultMap" type="com.liwj.szpd.model.ProjectSchedule">
+    <constructor>
+      <idArg column="ID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="REVISION" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="CREATED_BY" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="CREATED_TIME" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="UPDATED_BY" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="UPDATED_TIME" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="START_DATE" javaType="java.util.Date" jdbcType="DATE" />
+      <arg column="PLAN_START_UP_DATE" javaType="java.util.Date" jdbcType="DATE" />
+      <arg column="PLAN_MIDDLE_DATE" javaType="java.util.Date" jdbcType="DATE" />
+      <arg column="PLAN_PRELIMINARY_RESULT" javaType="java.util.Date" jdbcType="DATE" />
+      <arg column="PLAN_REVIEW_DATE" javaType="java.util.Date" jdbcType="DATE" />
+      <arg column="PLAN_FINAL_DATE" javaType="java.util.Date" jdbcType="DATE" />
+      <arg column="ACTUAL_START_UP_DATE" javaType="java.util.Date" jdbcType="DATE" />
+      <arg column="ACTUAL_MIDDLE_DATE" javaType="java.util.Date" jdbcType="DATE" />
+      <arg column="ACTUAL_PRELIMINARY_RESULT" javaType="java.util.Date" jdbcType="DATE" />
+      <arg column="ACTUAL_REVIEW_DATE" javaType="java.util.Date" jdbcType="DATE" />
+      <arg column="ACTUAL_FINAL_DATE" javaType="java.util.Date" jdbcType="DATE" />
+      <arg column="PROJECT_ID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, REVISION, CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, START_DATE, PLAN_START_UP_DATE, 
+    PLAN_MIDDLE_DATE, PLAN_PRELIMINARY_RESULT, PLAN_REVIEW_DATE, PLAN_FINAL_DATE, ACTUAL_START_UP_DATE, 
+    ACTUAL_MIDDLE_DATE, ACTUAL_PRELIMINARY_RESULT, ACTUAL_REVIEW_DATE, ACTUAL_FINAL_DATE, 
+    PROJECT_ID
+  </sql>
+  <select id="selectByExample" parameterType="com.liwj.szpd.model.ProjectScheduleExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from PROJECT_SCHEDULE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from PROJECT_SCHEDULE
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from PROJECT_SCHEDULE
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.liwj.szpd.model.ProjectScheduleExample">
+    delete from PROJECT_SCHEDULE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.liwj.szpd.model.ProjectSchedule">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into PROJECT_SCHEDULE (REVISION, CREATED_BY, CREATED_TIME, 
+      UPDATED_BY, UPDATED_TIME, START_DATE, 
+      PLAN_START_UP_DATE, PLAN_MIDDLE_DATE, PLAN_PRELIMINARY_RESULT, 
+      PLAN_REVIEW_DATE, PLAN_FINAL_DATE, ACTUAL_START_UP_DATE, 
+      ACTUAL_MIDDLE_DATE, ACTUAL_PRELIMINARY_RESULT, ACTUAL_REVIEW_DATE, 
+      ACTUAL_FINAL_DATE, PROJECT_ID)
+    values (#{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=INTEGER}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=INTEGER}, #{updatedTime,jdbcType=TIMESTAMP}, #{startDate,jdbcType=DATE}, 
+      #{planStartUpDate,jdbcType=DATE}, #{planMiddleDate,jdbcType=DATE}, #{planPreliminaryResult,jdbcType=DATE}, 
+      #{planReviewDate,jdbcType=DATE}, #{planFinalDate,jdbcType=DATE}, #{actualStartUpDate,jdbcType=DATE}, 
+      #{actualMiddleDate,jdbcType=DATE}, #{actualPreliminaryResult,jdbcType=DATE}, #{actualReviewDate,jdbcType=DATE}, 
+      #{actualFinalDate,jdbcType=DATE}, #{projectId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.liwj.szpd.model.ProjectSchedule">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into PROJECT_SCHEDULE
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="revision != null">
+        REVISION,
+      </if>
+      <if test="createdBy != null">
+        CREATED_BY,
+      </if>
+      <if test="createdTime != null">
+        CREATED_TIME,
+      </if>
+      <if test="updatedBy != null">
+        UPDATED_BY,
+      </if>
+      <if test="updatedTime != null">
+        UPDATED_TIME,
+      </if>
+      <if test="startDate != null">
+        START_DATE,
+      </if>
+      <if test="planStartUpDate != null">
+        PLAN_START_UP_DATE,
+      </if>
+      <if test="planMiddleDate != null">
+        PLAN_MIDDLE_DATE,
+      </if>
+      <if test="planPreliminaryResult != null">
+        PLAN_PRELIMINARY_RESULT,
+      </if>
+      <if test="planReviewDate != null">
+        PLAN_REVIEW_DATE,
+      </if>
+      <if test="planFinalDate != null">
+        PLAN_FINAL_DATE,
+      </if>
+      <if test="actualStartUpDate != null">
+        ACTUAL_START_UP_DATE,
+      </if>
+      <if test="actualMiddleDate != null">
+        ACTUAL_MIDDLE_DATE,
+      </if>
+      <if test="actualPreliminaryResult != null">
+        ACTUAL_PRELIMINARY_RESULT,
+      </if>
+      <if test="actualReviewDate != null">
+        ACTUAL_REVIEW_DATE,
+      </if>
+      <if test="actualFinalDate != null">
+        ACTUAL_FINAL_DATE,
+      </if>
+      <if test="projectId != null">
+        PROJECT_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="revision != null">
+        #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=INTEGER},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startDate != null">
+        #{startDate,jdbcType=DATE},
+      </if>
+      <if test="planStartUpDate != null">
+        #{planStartUpDate,jdbcType=DATE},
+      </if>
+      <if test="planMiddleDate != null">
+        #{planMiddleDate,jdbcType=DATE},
+      </if>
+      <if test="planPreliminaryResult != null">
+        #{planPreliminaryResult,jdbcType=DATE},
+      </if>
+      <if test="planReviewDate != null">
+        #{planReviewDate,jdbcType=DATE},
+      </if>
+      <if test="planFinalDate != null">
+        #{planFinalDate,jdbcType=DATE},
+      </if>
+      <if test="actualStartUpDate != null">
+        #{actualStartUpDate,jdbcType=DATE},
+      </if>
+      <if test="actualMiddleDate != null">
+        #{actualMiddleDate,jdbcType=DATE},
+      </if>
+      <if test="actualPreliminaryResult != null">
+        #{actualPreliminaryResult,jdbcType=DATE},
+      </if>
+      <if test="actualReviewDate != null">
+        #{actualReviewDate,jdbcType=DATE},
+      </if>
+      <if test="actualFinalDate != null">
+        #{actualFinalDate,jdbcType=DATE},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.liwj.szpd.model.ProjectScheduleExample" resultType="java.lang.Long">
+    select count(*) from PROJECT_SCHEDULE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update PROJECT_SCHEDULE
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.revision != null">
+        REVISION = #{record.revision,jdbcType=INTEGER},
+      </if>
+      <if test="record.createdBy != null">
+        CREATED_BY = #{record.createdBy,jdbcType=INTEGER},
+      </if>
+      <if test="record.createdTime != null">
+        CREATED_TIME = #{record.createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updatedBy != null">
+        UPDATED_BY = #{record.updatedBy,jdbcType=INTEGER},
+      </if>
+      <if test="record.updatedTime != null">
+        UPDATED_TIME = #{record.updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.startDate != null">
+        START_DATE = #{record.startDate,jdbcType=DATE},
+      </if>
+      <if test="record.planStartUpDate != null">
+        PLAN_START_UP_DATE = #{record.planStartUpDate,jdbcType=DATE},
+      </if>
+      <if test="record.planMiddleDate != null">
+        PLAN_MIDDLE_DATE = #{record.planMiddleDate,jdbcType=DATE},
+      </if>
+      <if test="record.planPreliminaryResult != null">
+        PLAN_PRELIMINARY_RESULT = #{record.planPreliminaryResult,jdbcType=DATE},
+      </if>
+      <if test="record.planReviewDate != null">
+        PLAN_REVIEW_DATE = #{record.planReviewDate,jdbcType=DATE},
+      </if>
+      <if test="record.planFinalDate != null">
+        PLAN_FINAL_DATE = #{record.planFinalDate,jdbcType=DATE},
+      </if>
+      <if test="record.actualStartUpDate != null">
+        ACTUAL_START_UP_DATE = #{record.actualStartUpDate,jdbcType=DATE},
+      </if>
+      <if test="record.actualMiddleDate != null">
+        ACTUAL_MIDDLE_DATE = #{record.actualMiddleDate,jdbcType=DATE},
+      </if>
+      <if test="record.actualPreliminaryResult != null">
+        ACTUAL_PRELIMINARY_RESULT = #{record.actualPreliminaryResult,jdbcType=DATE},
+      </if>
+      <if test="record.actualReviewDate != null">
+        ACTUAL_REVIEW_DATE = #{record.actualReviewDate,jdbcType=DATE},
+      </if>
+      <if test="record.actualFinalDate != null">
+        ACTUAL_FINAL_DATE = #{record.actualFinalDate,jdbcType=DATE},
+      </if>
+      <if test="record.projectId != null">
+        PROJECT_ID = #{record.projectId,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update PROJECT_SCHEDULE
+    set ID = #{record.id,jdbcType=INTEGER},
+      REVISION = #{record.revision,jdbcType=INTEGER},
+      CREATED_BY = #{record.createdBy,jdbcType=INTEGER},
+      CREATED_TIME = #{record.createdTime,jdbcType=TIMESTAMP},
+      UPDATED_BY = #{record.updatedBy,jdbcType=INTEGER},
+      UPDATED_TIME = #{record.updatedTime,jdbcType=TIMESTAMP},
+      START_DATE = #{record.startDate,jdbcType=DATE},
+      PLAN_START_UP_DATE = #{record.planStartUpDate,jdbcType=DATE},
+      PLAN_MIDDLE_DATE = #{record.planMiddleDate,jdbcType=DATE},
+      PLAN_PRELIMINARY_RESULT = #{record.planPreliminaryResult,jdbcType=DATE},
+      PLAN_REVIEW_DATE = #{record.planReviewDate,jdbcType=DATE},
+      PLAN_FINAL_DATE = #{record.planFinalDate,jdbcType=DATE},
+      ACTUAL_START_UP_DATE = #{record.actualStartUpDate,jdbcType=DATE},
+      ACTUAL_MIDDLE_DATE = #{record.actualMiddleDate,jdbcType=DATE},
+      ACTUAL_PRELIMINARY_RESULT = #{record.actualPreliminaryResult,jdbcType=DATE},
+      ACTUAL_REVIEW_DATE = #{record.actualReviewDate,jdbcType=DATE},
+      ACTUAL_FINAL_DATE = #{record.actualFinalDate,jdbcType=DATE},
+      PROJECT_ID = #{record.projectId,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.liwj.szpd.model.ProjectSchedule">
+    update PROJECT_SCHEDULE
+    <set>
+      <if test="revision != null">
+        REVISION = #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        CREATED_BY = #{createdBy,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        UPDATED_BY = #{updatedBy,jdbcType=INTEGER},
+      </if>
+      <if test="updatedTime != null">
+        UPDATED_TIME = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startDate != null">
+        START_DATE = #{startDate,jdbcType=DATE},
+      </if>
+      <if test="planStartUpDate != null">
+        PLAN_START_UP_DATE = #{planStartUpDate,jdbcType=DATE},
+      </if>
+      <if test="planMiddleDate != null">
+        PLAN_MIDDLE_DATE = #{planMiddleDate,jdbcType=DATE},
+      </if>
+      <if test="planPreliminaryResult != null">
+        PLAN_PRELIMINARY_RESULT = #{planPreliminaryResult,jdbcType=DATE},
+      </if>
+      <if test="planReviewDate != null">
+        PLAN_REVIEW_DATE = #{planReviewDate,jdbcType=DATE},
+      </if>
+      <if test="planFinalDate != null">
+        PLAN_FINAL_DATE = #{planFinalDate,jdbcType=DATE},
+      </if>
+      <if test="actualStartUpDate != null">
+        ACTUAL_START_UP_DATE = #{actualStartUpDate,jdbcType=DATE},
+      </if>
+      <if test="actualMiddleDate != null">
+        ACTUAL_MIDDLE_DATE = #{actualMiddleDate,jdbcType=DATE},
+      </if>
+      <if test="actualPreliminaryResult != null">
+        ACTUAL_PRELIMINARY_RESULT = #{actualPreliminaryResult,jdbcType=DATE},
+      </if>
+      <if test="actualReviewDate != null">
+        ACTUAL_REVIEW_DATE = #{actualReviewDate,jdbcType=DATE},
+      </if>
+      <if test="actualFinalDate != null">
+        ACTUAL_FINAL_DATE = #{actualFinalDate,jdbcType=DATE},
+      </if>
+      <if test="projectId != null">
+        PROJECT_ID = #{projectId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.liwj.szpd.model.ProjectSchedule">
+    update PROJECT_SCHEDULE
+    set REVISION = #{revision,jdbcType=INTEGER},
+      CREATED_BY = #{createdBy,jdbcType=INTEGER},
+      CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      UPDATED_BY = #{updatedBy,jdbcType=INTEGER},
+      UPDATED_TIME = #{updatedTime,jdbcType=TIMESTAMP},
+      START_DATE = #{startDate,jdbcType=DATE},
+      PLAN_START_UP_DATE = #{planStartUpDate,jdbcType=DATE},
+      PLAN_MIDDLE_DATE = #{planMiddleDate,jdbcType=DATE},
+      PLAN_PRELIMINARY_RESULT = #{planPreliminaryResult,jdbcType=DATE},
+      PLAN_REVIEW_DATE = #{planReviewDate,jdbcType=DATE},
+      PLAN_FINAL_DATE = #{planFinalDate,jdbcType=DATE},
+      ACTUAL_START_UP_DATE = #{actualStartUpDate,jdbcType=DATE},
+      ACTUAL_MIDDLE_DATE = #{actualMiddleDate,jdbcType=DATE},
+      ACTUAL_PRELIMINARY_RESULT = #{actualPreliminaryResult,jdbcType=DATE},
+      ACTUAL_REVIEW_DATE = #{actualReviewDate,jdbcType=DATE},
+      ACTUAL_FINAL_DATE = #{actualFinalDate,jdbcType=DATE},
+      PROJECT_ID = #{projectId,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
