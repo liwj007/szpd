@@ -24,8 +24,6 @@ import java.util.List;
 @RequestMapping(value = "/util")
 public class UtilController {
 
-    String bucket = "szpd";
-
     @Autowired
     private UserMapper userMapper;
 

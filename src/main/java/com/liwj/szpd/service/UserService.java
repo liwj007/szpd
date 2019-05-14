@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserService {
     String login(String openid, String session_key,String name,String avatar);
 
-    boolean checkActive(String token);
+    String checkActive(String token);
 
     String generateVerifyCode(String token,String phone);
 

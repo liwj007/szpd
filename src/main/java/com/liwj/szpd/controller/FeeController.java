@@ -2,9 +2,7 @@ package com.liwj.szpd.controller;
 
 import com.liwj.szpd.form.ProjectFinanceForm;
 import com.liwj.szpd.service.ProjectFeeService;
-import com.liwj.szpd.utils.ErrorCode;
 import com.liwj.szpd.utils.JsonResult;
-import com.liwj.szpd.utils.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -49,7 +47,6 @@ public class FeeController {
                                      @RequestParam(value = "pid") Integer projectID) {
 
         ProjectFinanceForm form = projectFeeService.getFinanceForm(token, projectID);
-
         return JsonResult.renderSuccess(form);
     }
 }

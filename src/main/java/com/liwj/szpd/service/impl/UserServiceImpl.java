@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
             user.setAvatar(avatar);
             user.setName(name);
 
-            String token = TokenProcessor.getInstance().makeToken();
+            String token = TokenProcessor.getInstance().sign(user.getName(),user.getId().toString());
             if (token == null) {
                 return null;
             }
@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
             User user = users.get(0);
             Calendar c = Calendar.getInstance();
             if (c.getTimeInMillis() > user.getToeknExperie()) {
-                String token = TokenProcessor.getInstance().makeToken();
+                String token = TokenProcessor.getInstance().sign(user.getName(),user.getId().toString());
                 if (token == null) {
                     return null;
                 }
@@ -96,13 +96,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean checkActive(String token) {
+    public String checkActive(String token) {
         User user = userMapper.findByToken(token);
         if (user == null)
-            return false;
+            return null;
         if (user.getPhone() == null || user.getPhone().equals(""))
-            return false;
-        return true;
+            return null;
+        Calendar c = Calendar.getInstance();
+        if (c.getTimeInMillis() > user.getToeknExperie()) {
+            String t = TokenProcessor.getInstance().sign(user.getName(),user.getId().toString());
+            setUserToken(user, t, c);
+            userMapper.updateByPrimaryKeySelective(user);
+        }
+        return user.getToken();
     }
 
     @Override

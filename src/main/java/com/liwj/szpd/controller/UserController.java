@@ -40,11 +40,8 @@ public class UserController {
 
     @RequestMapping(value = "/isActive", method = RequestMethod.GET)
     public JsonResult isActive(@RequestParam(value = "token") String token) {
-        boolean flag = userService.checkActive(token);
-        if (flag)
-            return JsonResult.renderSuccess();
-        else
-            return JsonResult.renderFail();
+        String newToken = userService.checkActive(token);
+        return JsonResult.renderSuccess(Constants.SUCCESS,newToken);
     }
 
     @RequestMapping(value = "/get_verification_code", method = RequestMethod.GET)
