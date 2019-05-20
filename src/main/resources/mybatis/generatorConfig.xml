@@ -47,7 +47,7 @@
 
 
         <!-- sql占位符，表示所有的表 -->
-        <table tableName="org"
+        <table tableName="project"
                enableCountByExample="true"
                enableUpdateByExample="true"
                enableDeleteByExample="true"

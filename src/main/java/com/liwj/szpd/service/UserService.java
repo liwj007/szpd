@@ -14,8 +14,6 @@ public interface UserService {
 
     boolean bindPhone(String token, String phone, String code);
 
-    List<User> searchUser(String content);
-
     boolean checkAddProjectRight(String token);
 
     boolean checkMangerRole(String token,Integer projectId);

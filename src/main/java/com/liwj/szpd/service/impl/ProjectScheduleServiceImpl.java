@@ -1,9 +1,7 @@
 package com.liwj.szpd.service.impl;
 
-import com.liwj.szpd.mapper.ProjectFileMapper;
-import com.liwj.szpd.mapper.ProjectLeaderMapper;
-import com.liwj.szpd.mapper.ProjectScheduleMapper;
-import com.liwj.szpd.mapper.UserMapper;
+import com.liwj.szpd.form.ProjectDateForm;
+import com.liwj.szpd.mapper.*;
 import com.liwj.szpd.model.*;
 import com.liwj.szpd.service.ProjectScheduleService;
 import com.liwj.szpd.utils.Constants;
@@ -12,14 +10,10 @@ import com.liwj.szpd.vo.ProjectScheduleVO;
 import com.liwj.szpd.vo.ScheduleItemVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -36,6 +30,10 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
 
     @Autowired
     private ProjectLeaderMapper projectLeaderMapper;
+
+    @Autowired
+    private ProjectMapper projectMapper;
+
 
 
     @Override
@@ -107,7 +105,7 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
         ProjectLeaderExample leaderExample = new ProjectLeaderExample();
         leaderExample.createCriteria().andProjectIdEqualTo(projectId).andUserIdEqualTo(user.getId());
         long c = projectLeaderMapper.countByExample(leaderExample);
-        if (c==0)
+        if (c == 0)
             vo.setEditable(false);
         else
             vo.setEditable(true);
@@ -152,30 +150,25 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
     }
 
     @Override
-    public boolean updateStep(String token, Integer scheduleId, Integer step, String planDate, String actualDate, List<String> files) {
+    public boolean updateStep(String token, Integer scheduleId, Integer step, String actualDate, List<String> files) {
         ProjectSchedule schedule = projectScheduleMapper.selectByPrimaryKey(scheduleId);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         User user = userMapper.findByToken(token);
         try {
             switch (step) {
                 case Constants.PROJECT_START_STEP:
-                    schedule.setPlanStartUpDate(planDate == null ? null : dateFormat.parse(planDate));
                     schedule.setActualStartUpDate(actualDate == null ? null : dateFormat.parse(actualDate));
                     break;
                 case Constants.PROJECT_MIDDLE_STEP:
-                    schedule.setPlanMiddleDate(planDate == null ? null : dateFormat.parse(planDate));
                     schedule.setActualMiddleDate(actualDate == null ? null : dateFormat.parse(actualDate));
                     break;
                 case Constants.PROJECT_PRELIMINARY_STEP:
-                    schedule.setPlanPreliminaryResult(planDate == null ? null : dateFormat.parse(planDate));
                     schedule.setActualPreliminaryResult(actualDate == null ? null : dateFormat.parse(actualDate));
                     break;
                 case Constants.PROJECT_REVIEW_STEP:
-                    schedule.setPlanReviewDate(planDate == null ? null : dateFormat.parse(planDate));
                     schedule.setActualReviewDate(actualDate == null ? null : dateFormat.parse(actualDate));
                     break;
                 case Constants.PROJECT_FINAL_STEP:
-                    schedule.setPlanFinalDate(planDate == null ? null : dateFormat.parse(planDate));
                     schedule.setActualFinalDate(actualDate == null ? null : dateFormat.parse(actualDate));
                     break;
             }
@@ -213,6 +206,79 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
             res.add(fileVO);
         }
         return res;
+    }
+
+    @Override
+    public boolean updateDates(String token, ProjectDateForm projectDateForm) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        User user = userMapper.findByToken(token);
+
+        Integer projectId = projectDateForm.getProjectId();
+        ProjectScheduleExample example = new ProjectScheduleExample();
+        example.createCriteria().andProjectIdEqualTo(projectId);
+        List<ProjectSchedule> projectSchedules = projectScheduleMapper.selectByExample(example);
+        if (projectSchedules.size() == 0)
+            return false;
+        ProjectSchedule schedule = projectSchedules.get(0);
+        try {
+            if (projectDateForm.getStartDate() != null && !projectDateForm.getStartDate().equals("")) {
+                schedule.setPlanStartUpDate(dateFormat.parse(projectDateForm.getStartDate()));
+
+            }
+            if (projectDateForm.getMiddleDate() != null && !projectDateForm.getMiddleDate().equals("")) {
+                schedule.setPlanMiddleDate(dateFormat.parse(projectDateForm.getMiddleDate()));
+
+            }
+            if (projectDateForm.getPreliminaryDate() != null && !projectDateForm.getPreliminaryDate().equals("")) {
+                schedule.setPlanPreliminaryResult(dateFormat.parse(projectDateForm.getPreliminaryDate()));
+
+
+            }
+            if (projectDateForm.getReviewDate() != null && !projectDateForm.getReviewDate().equals("")) {
+                schedule.setPlanReviewDate(dateFormat.parse(projectDateForm.getReviewDate()));
+
+            }
+            if (projectDateForm.getFinalDate() != null && !projectDateForm.getFinalDate().equals("")) {
+                schedule.setPlanFinalDate(dateFormat.parse(projectDateForm.getFinalDate()));
+
+
+            }
+            schedule.setUpdatedTime(new Date());
+            schedule.setUpdatedBy(user.getId());
+            projectScheduleMapper.updateByPrimaryKeySelective(schedule);
+
+            Project project = projectMapper.selectByPrimaryKey(projectId);
+            if (project.getStatus() == Constants.PROJECT_NEW) {
+                project.setStatus(Constants.PROJECT_DOING);
+                projectMapper.updateByPrimaryKeySelective(project);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public ProjectDateForm getPlanDates(String token, Integer projectId) {
+        ProjectDateForm form = new ProjectDateForm();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        ProjectScheduleExample example = new ProjectScheduleExample();
+        example.createCriteria().andProjectIdEqualTo(projectId);
+        List<ProjectSchedule> projectSchedules = projectScheduleMapper.selectByExample(example);
+        if (projectSchedules.size() == 0)
+            return form;
+        ProjectSchedule schedule = projectSchedules.get(0);
+        form.setProjectId(projectId);
+
+        form.setStartDate(schedule.getPlanStartUpDate() == null ? "" : sdf.format(schedule.getPlanStartUpDate()));
+        form.setMiddleDate(schedule.getPlanMiddleDate() == null ? "" : sdf.format(schedule.getPlanMiddleDate()));
+        form.setPreliminaryDate(schedule.getPlanPreliminaryResult() == null ? "" : sdf.format(schedule.getPlanPreliminaryResult()));
+        form.setReviewDate(schedule.getPlanReviewDate() == null ? "" : sdf.format(schedule.getPlanReviewDate()));
+        form.setFinalDate(schedule.getPlanFinalDate() == null ? "" : sdf.format(schedule.getPlanFinalDate()));
+
+        return form;
     }
 
     @Override
@@ -265,53 +331,6 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
         return true;
     }
 
-    @Override
-    public List<String> getUploads(Integer projectID) {
-        ProjectFileExample example = new ProjectFileExample();
-        example.createCriteria().andProjectIdEqualTo(projectID);
-        List<ProjectFile> files = projectFileMapper.selectByExample(example);
-        List<String> res = new ArrayList<>();
-        for (ProjectFile file : files) {
-            res.add(file.getPath());
-        }
-        return res;
-    }
-
-    @Override
-    public String uploadFile(String token, MultipartFile file) {
-        if (!file.isEmpty()) {
-            String fileName = file.getOriginalFilename();
-            String path;
-            String type = fileName.indexOf(".") != -1 ? fileName.substring(fileName.lastIndexOf(".") + 1) : null;
-
-            if (type != null) {
-                if ("GIF".equals(type.toUpperCase()) || "PNG".equals(type.toUpperCase()) || "JPG".equals(type.toUpperCase())) {
-
-                    String trueFileName = generateRandomFilename();
-
-
-                    // 项目在容器中实际发布运行的根路径
-                    String realPath = "/Users/liwj/Documents/uploads/";
-
-                    // 设置存放图片文件的路径
-                    path = realPath + trueFileName;
-                    try {
-                        file.transferTo(new File(path));
-                        return path;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                } else {
-                    return null;
-                }
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
 
     @Override
     public boolean updateActualDate(String token, Integer id, String date, String type) {
@@ -347,35 +366,4 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
     }
 
 
-    private String twoNumbers(int number) {
-        String _number = number + "";
-        if (_number.length() < 2) {
-            _number = "0" + _number;
-        }
-        return _number;
-    }
-
-    private String generateRandomFilename() {
-        String fourRandom = "";
-        //产生4位的随机数(不足4位前加零)
-        int randomNum = (int) (Math.random() * 10000);
-        fourRandom = randomNum + "";
-        int randLength = fourRandom.length();
-        if (randLength < 4) {
-            for (int i = 1; i <= 4 - randLength; i++)
-                fourRandom = fourRandom + "0";
-        }
-        StringBuilder sb = new StringBuilder("");
-
-        Calendar calendar = Calendar.getInstance();
-
-        sb.append(calendar.get(Calendar.YEAR))
-                .append(twoNumbers(calendar.get(Calendar.MONTH) + 1))
-                .append(twoNumbers(calendar.get(Calendar.DAY_OF_MONTH)))
-                .append(twoNumbers(calendar.get(Calendar.HOUR)))
-                .append(twoNumbers(calendar.get(Calendar.MINUTE)))
-                .append(twoNumbers(calendar.get(Calendar.SECOND)))
-                .append(fourRandom);
-        return sb.toString();
-    }
 }

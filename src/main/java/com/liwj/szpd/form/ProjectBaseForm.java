@@ -6,12 +6,30 @@ public class ProjectBaseForm {
     private String code;
     private String contract;
     private String party;
+    private Double totalFee;
 
     private String startPercent;
     private String middlePercent;
     private String finalPercent;
     private String reviewPercent;
     private String preliminaryPercent;
+    private String remark;
+
+    public Double getTotalFee() {
+        return totalFee;
+    }
+
+    public void setTotalFee(Double totalFee) {
+        this.totalFee = totalFee;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 
     private boolean editable;
 

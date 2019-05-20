@@ -15,7 +15,8 @@ public class Constants {
     public final static int PROJECT_FINAL_STEP = 4;
 
 
-    public static final int PROJECT_OPEN = 0;
+    public static final int PROJECT_NEW = 0;
+    public static final int PROJECT_DOING = 1;
     public static final int PROJECT_CLOSE = 1;
 
     public static final String SUCCESS = "执行成功";

@@ -1,5 +1,6 @@
 package com.liwj.szpd.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -805,6 +806,136 @@ public class ProjectExample {
             return (Criteria) this;
         }
 
+        public Criteria andRemarkIsNull() {
+            addCriterion("REMARK is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkIsNotNull() {
+            addCriterion("REMARK is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkEqualTo(String value) {
+            addCriterion("REMARK =", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkNotEqualTo(String value) {
+            addCriterion("REMARK <>", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkGreaterThan(String value) {
+            addCriterion("REMARK >", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkGreaterThanOrEqualTo(String value) {
+            addCriterion("REMARK >=", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkLessThan(String value) {
+            addCriterion("REMARK <", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkLessThanOrEqualTo(String value) {
+            addCriterion("REMARK <=", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkLike(String value) {
+            addCriterion("REMARK like", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkNotLike(String value) {
+            addCriterion("REMARK not like", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkIn(List<String> values) {
+            addCriterion("REMARK in", values, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkNotIn(List<String> values) {
+            addCriterion("REMARK not in", values, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkBetween(String value1, String value2) {
+            addCriterion("REMARK between", value1, value2, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkNotBetween(String value1, String value2) {
+            addCriterion("REMARK not between", value1, value2, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalFeeIsNull() {
+            addCriterion("TOTAL_FEE is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalFeeIsNotNull() {
+            addCriterion("TOTAL_FEE is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalFeeEqualTo(BigDecimal value) {
+            addCriterion("TOTAL_FEE =", value, "totalFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalFeeNotEqualTo(BigDecimal value) {
+            addCriterion("TOTAL_FEE <>", value, "totalFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalFeeGreaterThan(BigDecimal value) {
+            addCriterion("TOTAL_FEE >", value, "totalFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalFeeGreaterThanOrEqualTo(BigDecimal value) {
+            addCriterion("TOTAL_FEE >=", value, "totalFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalFeeLessThan(BigDecimal value) {
+            addCriterion("TOTAL_FEE <", value, "totalFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalFeeLessThanOrEqualTo(BigDecimal value) {
+            addCriterion("TOTAL_FEE <=", value, "totalFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalFeeIn(List<BigDecimal> values) {
+            addCriterion("TOTAL_FEE in", values, "totalFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalFeeNotIn(List<BigDecimal> values) {
+            addCriterion("TOTAL_FEE not in", values, "totalFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalFeeBetween(BigDecimal value1, BigDecimal value2) {
+            addCriterion("TOTAL_FEE between", value1, value2, "totalFee");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalFeeNotBetween(BigDecimal value1, BigDecimal value2) {
+            addCriterion("TOTAL_FEE not between", value1, value2, "totalFee");
+            return (Criteria) this;
+        }
+
         public Criteria andNameLikeInsensitive(String value) {
             addCriterion("upper(NAME) like", value.toUpperCase(), "name");
             return (Criteria) this;
@@ -822,6 +953,11 @@ public class ProjectExample {
 
         public Criteria andPartyALikeInsensitive(String value) {
             addCriterion("upper(PARTY_A) like", value.toUpperCase(), "partyA");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkLikeInsensitive(String value) {
+            addCriterion("upper(REMARK) like", value.toUpperCase(), "remark");
             return (Criteria) this;
         }
     }

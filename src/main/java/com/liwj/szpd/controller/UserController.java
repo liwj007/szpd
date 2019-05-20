@@ -6,10 +6,7 @@ import com.liwj.szpd.utils.Constants;
 import com.liwj.szpd.utils.JsonResult;
 import com.liwj.szpd.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -39,13 +36,13 @@ public class UserController {
     }
 
     @RequestMapping(value = "/isActive", method = RequestMethod.GET)
-    public JsonResult isActive(@RequestParam(value = "token") String token) {
+    public JsonResult isActive(@RequestHeader(value = "token") String token) {
         String newToken = userService.checkActive(token);
         return JsonResult.renderSuccess(Constants.SUCCESS,newToken);
     }
 
     @RequestMapping(value = "/get_verification_code", method = RequestMethod.GET)
-    public JsonResult getVerificationCode(@RequestParam(value = "token") String token,
+    public JsonResult getVerificationCode(@RequestHeader(value = "token") String token,
                                             @RequestParam(value = "phone") String phone) {
         String code = userService.generateVerifyCode(token, phone);
         if (code != null) {
@@ -56,7 +53,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/bind_phone", method = RequestMethod.POST)
-    public JsonResult bindPhone(@RequestParam(value = "token") String token,
+    public JsonResult bindPhone(@RequestHeader(value = "token") String token,
                                   @RequestParam(value = "phone") String phone,
                                   @RequestParam(value = "code") String code) {
         boolean flag = userService.bindPhone(token, phone, code);
@@ -68,7 +65,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/info", method = RequestMethod.GET)
-    public JsonResult getInfo(@RequestParam(value = "token") String token) {
+    public JsonResult getInfo(@RequestHeader(value = "token") String token) {
 
         UserVO vo = userService.getInfo(token);
 

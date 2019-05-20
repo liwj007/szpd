@@ -1,5 +1,6 @@
 package com.liwj.szpd.service;
 
+import com.liwj.szpd.form.ProjectDateForm;
 import com.liwj.szpd.vo.ProjectScheduleVO;
 import com.liwj.szpd.vo.ScheduleItemVO;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,13 +14,14 @@ public interface ProjectScheduleService {
 
     boolean updateActualDate(String token, Integer id, String date, String type);
 
-    String uploadFile(String token, MultipartFile file);
-
-    List<String> getUploads(Integer projectID);
 
     ProjectScheduleVO getScheduleInfo(String token, Integer projectId);
 
     ScheduleItemVO getScheduleStepInfo(String token, Integer scheduleId, Integer step);
 
-    boolean updateStep(String token, Integer scheduleId, Integer step, String planDate, String actualDate, List<String> files);
+    boolean updateStep(String token, Integer scheduleId, Integer step,  String actualDate, List<String> files);
+
+    boolean updateDates(String token, ProjectDateForm projectDateForm);
+
+    ProjectDateForm getPlanDates(String token, Integer projectId);
 }

@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
         if (user.getPhone() == null || user.getPhone().equals(""))
             return null;
         Calendar c = Calendar.getInstance();
-        if (c.getTimeInMillis() > user.getToeknExperie()) {
+        if (user.getToeknExperie()==null||c.getTimeInMillis() > user.getToeknExperie()) {
             String t = TokenProcessor.getInstance().sign(user.getName(),user.getId().toString());
             setUserToken(user, t, c);
             userMapper.updateByPrimaryKeySelective(user);
@@ -206,22 +206,7 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
-    @Override
-    public List<User> searchUser(String content) {
-        UserExample userExample = new UserExample();
-        UserExample.Criteria criteria = userExample.createCriteria();
-        criteria.andNameLike("%" + content + "%");
-        criteria.andStatusEqualTo(Constants.USER_STATE_ACTIVE);
 
-        UserExample.Criteria criteria2 = userExample.createCriteria();
-        criteria2.andPhoneLike("%" + content + "%");
-        criteria2.andStatusEqualTo(Constants.USER_STATE_ACTIVE);
-
-        userExample.or(criteria2);
-
-        List<User> userList = userMapper.selectByExample(userExample);
-        return userList;
-    }
 
     private void setUserToken(User user, String token, Calendar c) {
         c.add(Calendar.DAY_OF_MONTH, 1);

@@ -2,8 +2,11 @@ package com.liwj.szpd.controller;
 
 import com.liwj.szpd.form.ProjectBaseForm;
 import com.liwj.szpd.service.ProjectService;
+import com.liwj.szpd.utils.Constants;
 import com.liwj.szpd.utils.JsonResult;
 import com.liwj.szpd.utils.PageResult;
+import com.liwj.szpd.utils.ResponseData;
+import com.liwj.szpd.vo.MembersVO;
 import com.liwj.szpd.vo.ProjectItemVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +18,7 @@ public class ProjectController {
     private ProjectService projectService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public JsonResult createProject(@RequestParam(value = "token") String token,
+    public JsonResult createProject(@RequestHeader(value = "token") String token,
                                       @RequestBody ProjectBaseForm form) {
         boolean flag = projectService.create(token, form);
         if (flag) {
@@ -26,7 +29,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public JsonResult getMyProjects(@RequestParam(value = "token") String token,
+    public JsonResult getMyProjects(@RequestHeader(value = "token") String token,
                                     @RequestParam(value = "content") String content,
                                     @RequestParam(value = "page") Integer page,
                                     @RequestParam(value = "size") Integer size) {
@@ -36,15 +39,23 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/info", method = RequestMethod.GET)
-    public JsonResult getProjectInfo(@RequestParam(value = "token") String token,
+    public JsonResult getProjectInfo(@RequestHeader(value = "token") String token,
                                      @RequestParam(value = "id") Integer projectId) {
         ProjectBaseForm res = projectService.getProjectInfo(token, projectId);
 
         return JsonResult.renderSuccess(res);
     }
 
+    @RequestMapping(value = "/remark", method = RequestMethod.GET)
+    public JsonResult getProjectRemark(@RequestHeader(value = "token") String token,
+                                     @RequestParam(value = "id") Integer projectId) {
+        String res = projectService.getProjectRemark(token, projectId);
+
+        return JsonResult.renderSuccess(Constants.SUCCESS,res);
+    }
+
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public JsonResult updateProject(@RequestParam(value = "token") String token,
+    public JsonResult updateProject(@RequestHeader(value = "token") String token,
                                     @RequestBody ProjectBaseForm form) {
         boolean flag = projectService.update(token, form);
         if (flag) {
@@ -55,7 +66,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/close", method = RequestMethod.POST)
-    public JsonResult closeProject(@RequestParam(value = "token") String token,
+    public JsonResult closeProject(@RequestHeader(value = "token") String token,
                                    @RequestParam(value = "id") Integer id) {
         boolean flag = projectService.close(token, id);
         if (flag) {
@@ -63,5 +74,13 @@ public class ProjectController {
         } else {
             return JsonResult.renderFail("更新项目失败");
         }
+    }
+
+    @RequestMapping(value = "/all_members", method = RequestMethod.GET)
+    public ResponseData getAllMembers(@RequestHeader(value = "token") String token,
+                                      @RequestParam(value = "pid") Integer projectID) {
+        ResponseData responseData = new ResponseData();
+        MembersVO res = projectService.getAllMembers(token,projectID);
+        return responseData.setSuccessData(res);
     }
 }

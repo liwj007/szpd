@@ -1,6 +1,7 @@
 package com.liwj.szpd.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class Project implements Serializable {
@@ -26,9 +27,13 @@ public class Project implements Serializable {
 
     private Integer status;
 
+    private String remark;
+
+    private BigDecimal totalFee;
+
     private static final long serialVersionUID = 1L;
 
-    public Project(Integer id, String name, String projectNumber, String contractNumber, String partyA, Integer revision, Integer createdBy, Date createdTime, Integer updatedBy, Date updatedTime, Integer status) {
+    public Project(Integer id, String name, String projectNumber, String contractNumber, String partyA, Integer revision, Integer createdBy, Date createdTime, Integer updatedBy, Date updatedTime, Integer status, String remark, BigDecimal totalFee) {
         this.id = id;
         this.name = name;
         this.projectNumber = projectNumber;
@@ -40,6 +45,8 @@ public class Project implements Serializable {
         this.updatedBy = updatedBy;
         this.updatedTime = updatedTime;
         this.status = status;
+        this.remark = remark;
+        this.totalFee = totalFee;
     }
 
     public Project() {
@@ -134,6 +141,22 @@ public class Project implements Serializable {
         this.status = status;
     }
 
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
+    }
+
+    public BigDecimal getTotalFee() {
+        return totalFee;
+    }
+
+    public void setTotalFee(BigDecimal totalFee) {
+        this.totalFee = totalFee;
+    }
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -156,7 +179,9 @@ public class Project implements Serializable {
             && (this.getCreatedTime() == null ? other.getCreatedTime() == null : this.getCreatedTime().equals(other.getCreatedTime()))
             && (this.getUpdatedBy() == null ? other.getUpdatedBy() == null : this.getUpdatedBy().equals(other.getUpdatedBy()))
             && (this.getUpdatedTime() == null ? other.getUpdatedTime() == null : this.getUpdatedTime().equals(other.getUpdatedTime()))
-            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()));
+            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
+            && (this.getRemark() == null ? other.getRemark() == null : this.getRemark().equals(other.getRemark()))
+            && (this.getTotalFee() == null ? other.getTotalFee() == null : this.getTotalFee().equals(other.getTotalFee()));
     }
 
     @Override
@@ -174,6 +199,8 @@ public class Project implements Serializable {
         result = prime * result + ((getUpdatedBy() == null) ? 0 : getUpdatedBy().hashCode());
         result = prime * result + ((getUpdatedTime() == null) ? 0 : getUpdatedTime().hashCode());
         result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
+        result = prime * result + ((getRemark() == null) ? 0 : getRemark().hashCode());
+        result = prime * result + ((getTotalFee() == null) ? 0 : getTotalFee().hashCode());
         return result;
     }
 }

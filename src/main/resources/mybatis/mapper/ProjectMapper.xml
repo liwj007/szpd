@@ -14,6 +14,8 @@
       <arg column="UPDATED_BY" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="UPDATED_TIME" javaType="java.util.Date" jdbcType="TIMESTAMP" />
       <arg column="STATUS" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="REMARK" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="TOTAL_FEE" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
     </constructor>
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -76,7 +78,7 @@
   </sql>
   <sql id="Base_Column_List">
     ID, NAME, PROJECT_NUMBER, CONTRACT_NUMBER, PARTY_A, REVISION, CREATED_BY, CREATED_TIME, 
-    UPDATED_BY, UPDATED_TIME, STATUS
+    UPDATED_BY, UPDATED_TIME, STATUS, REMARK, TOTAL_FEE
   </sql>
   <select id="selectByExample" parameterType="com.liwj.szpd.model.ProjectExample" resultMap="BaseResultMap">
     select
@@ -116,11 +118,13 @@
     insert into PROJECT (NAME, PROJECT_NUMBER, CONTRACT_NUMBER, 
       PARTY_A, REVISION, CREATED_BY, 
       CREATED_TIME, UPDATED_BY, UPDATED_TIME, 
-      STATUS)
+      STATUS, REMARK, TOTAL_FEE
+      )
     values (#{name,jdbcType=VARCHAR}, #{projectNumber,jdbcType=VARCHAR}, #{contractNumber,jdbcType=VARCHAR}, 
       #{partyA,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=INTEGER}, 
       #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=INTEGER}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{status,jdbcType=INTEGER})
+      #{status,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{totalFee,jdbcType=DECIMAL}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.liwj.szpd.model.Project">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -158,6 +162,12 @@
       <if test="status != null">
         STATUS,
       </if>
+      <if test="remark != null">
+        REMARK,
+      </if>
+      <if test="totalFee != null">
+        TOTAL_FEE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -189,6 +199,12 @@
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="totalFee != null">
+        #{totalFee,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -234,6 +250,12 @@
       <if test="record.status != null">
         STATUS = #{record.status,jdbcType=INTEGER},
       </if>
+      <if test="record.remark != null">
+        REMARK = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.totalFee != null">
+        TOTAL_FEE = #{record.totalFee,jdbcType=DECIMAL},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -251,7 +273,9 @@
       CREATED_TIME = #{record.createdTime,jdbcType=TIMESTAMP},
       UPDATED_BY = #{record.updatedBy,jdbcType=INTEGER},
       UPDATED_TIME = #{record.updatedTime,jdbcType=TIMESTAMP},
-      STATUS = #{record.status,jdbcType=INTEGER}
+      STATUS = #{record.status,jdbcType=INTEGER},
+      REMARK = #{record.remark,jdbcType=VARCHAR},
+      TOTAL_FEE = #{record.totalFee,jdbcType=DECIMAL}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -289,6 +313,12 @@
       <if test="status != null">
         STATUS = #{status,jdbcType=INTEGER},
       </if>
+      <if test="remark != null">
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="totalFee != null">
+        TOTAL_FEE = #{totalFee,jdbcType=DECIMAL},
+      </if>
     </set>
     where ID = #{id,jdbcType=INTEGER}
   </update>
@@ -303,7 +333,9 @@
       CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
       UPDATED_BY = #{updatedBy,jdbcType=INTEGER},
       UPDATED_TIME = #{updatedTime,jdbcType=TIMESTAMP},
-      STATUS = #{status,jdbcType=INTEGER}
+      STATUS = #{status,jdbcType=INTEGER},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      TOTAL_FEE = #{totalFee,jdbcType=DECIMAL}
     where ID = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

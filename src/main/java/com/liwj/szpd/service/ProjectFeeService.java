@@ -1,11 +1,17 @@
 package com.liwj.szpd.service;
 
-import com.liwj.szpd.form.ProjectFinanceForm;
+import com.liwj.szpd.vo.FinanceInfoVO;
+import com.liwj.szpd.vo.FinanceStepVO;
+import com.liwj.szpd.vo.FinanceVO;
+
+import java.util.List;
 
 public interface ProjectFeeService {
 
 
-    ProjectFinanceForm getFinanceForm(String token, Integer projectID);
+    FinanceVO getFinanceInfo(Integer projectID);
 
-    boolean updateFee(String token, Integer id, String invoice, String arrival, String noArrival, String stepArrival, String debt);
+    FinanceInfoVO getFinanceStepInfo(String token,Integer stepId);
+
+    boolean update(String token, FinanceStepVO form);
 }

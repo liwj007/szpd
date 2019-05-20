@@ -10,7 +10,10 @@ import com.liwj.szpd.utils.ChinesePinyinUtil;
 import com.liwj.szpd.utils.Constants;
 import com.liwj.szpd.utils.PageResult;
 import com.liwj.szpd.utils.RoleEnum;
+import com.liwj.szpd.vo.MembersVO;
 import com.liwj.szpd.vo.ProjectItemVO;
+import com.liwj.szpd.vo.UserItemVO;
+import com.liwj.szpd.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,8 +47,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private ProjectScheduleMapper projectScheduleMapper;
 
-    @Autowired
-    private ProjectFinanceMapper projectFinanceMapper;
 
     @Autowired
     private ProjectTreasurerMapper projectTreasurerMapper;
@@ -55,6 +56,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private UserRoleMapper userRoleMapper;
+
+    @Autowired
+    private ProjectFinanceStepMapper projectFinanceStepMapper;
 
     @Override
     @Transactional
@@ -70,27 +74,15 @@ public class ProjectServiceImpl implements ProjectService {
         project.setContractNumber(form.getContract());
         project.setProjectNumber(form.getCode());
         project.setPartyA(form.getParty());
-        project.setStatus(Constants.PROJECT_OPEN);
+        project.setStatus(Constants.PROJECT_NEW);
         project.setCreatedBy(user.getId());
         project.setCreatedTime(new Date());
+        project.setRemark(form.getRemark());
         project.setUpdatedTime(project.getCreatedTime());
+        project.setTotalFee(form.getTotalFee() == null ? null : new BigDecimal(form.getTotalFee()));
         projectMapper.insert(project);
 
-        ProjectFee fee = new ProjectFee();
-        fee.setCreatedBy(user.getId());
-        fee.setCreatedTime(new Date());
-        fee.setProjectId(project.getId());
-        if (form.getStartPercent() != null)
-            fee.setStartPercent(new BigDecimal(form.getStartPercent()));
-        if (form.getMiddlePercent() != null)
-            fee.setMiddlePercent(new BigDecimal(form.getMiddlePercent()));
-        if (form.getFinalPercent() != null)
-            fee.setFinalPercent(new BigDecimal(form.getFinalPercent()));
-        if (form.getReviewPercent() != null)
-            fee.setReviewPercent(new BigDecimal(form.getReviewPercent()));
-        if (form.getPreliminaryPercent() != null)
-            fee.setPreliminaryResultPercent(new BigDecimal(form.getPreliminaryPercent()));
-        projectFeeMapper.insert(fee);
+        updateFee(project, form, user, true);
 
         ProjectSchedule projectSchedule = new ProjectSchedule();
         projectSchedule.setProjectId(project.getId());
@@ -105,12 +97,6 @@ public class ProjectServiceImpl implements ProjectService {
         manager.setCreatedTime(new Date());
         manager.setCreatedBy(user.getId());
         projectManagerMapper.insert(manager);
-
-        ProjectFinance finance = new ProjectFinance();
-        finance.setProjectId(project.getId());
-        finance.setCreatedBy(user.getId());
-        finance.setCreatedTime(new Date());
-        projectFinanceMapper.insert(finance);
 
         generateProjectTreasureMapper(project, user);
 
@@ -177,22 +163,24 @@ public class ProjectServiceImpl implements ProjectService {
             vo.setDate(sdf.format(project.getUpdatedTime()));
             vo.setName(project.getName());
             vo.setIconName(ChinesePinyinUtil.getPinYinFirstHeadChar(project.getName()));
+            vo.setInitStatus(true);
 
             ProjectManagerExample managerExample = new ProjectManagerExample();
             managerExample.createCriteria().andUserIdEqualTo(user.getId()).andProjectIdEqualTo(project.getId());
             long c = projectManagerMapper.countByExample(managerExample);
-            if (c==1){
+            if (c == 1) {
                 vo.getRights().setManager(true);
                 vo.getRights().setUpdate(true);
                 vo.getRights().setClose(true);
                 vo.getRights().setDelete(true);
                 vo.getRights().setLeader(true);
-            }else{
+            } else {
                 ProjectLeaderExample leaderExample = new ProjectLeaderExample();
                 leaderExample.createCriteria().andUserIdEqualTo(user.getId()).andProjectIdEqualTo(project.getId());
                 c = projectLeaderMapper.countByExample(leaderExample);
-                if (c==1){
+                if (c == 1) {
                     vo.getRights().setMember(true);
+                    vo.setInitStatus(project.getStatus() != Constants.PROJECT_NEW);
                 }
             }
 
@@ -219,6 +207,8 @@ public class ProjectServiceImpl implements ProjectService {
         form.setName(project.getName());
         form.setCode(project.getProjectNumber());
         form.setContract(project.getContractNumber());
+        form.setRemark(project.getRemark());
+        form.setTotalFee(project.getTotalFee() == null ? null : project.getTotalFee().setScale(2).doubleValue());
         form.setParty(project.getPartyA());
 
         ProjectFeeExample feeExample = new ProjectFeeExample();
@@ -237,7 +227,7 @@ public class ProjectServiceImpl implements ProjectService {
         ProjectManagerExample managerExample = new ProjectManagerExample();
         managerExample.createCriteria().andUserIdEqualTo(user.getId()).andProjectIdEqualTo(projectId);
         long c = projectManagerMapper.countByExample(managerExample);
-        if (c==0)
+        if (c == 0)
             form.setEditable(false);
         else
             form.setEditable(true);
@@ -295,28 +285,161 @@ public class ProjectServiceImpl implements ProjectService {
         project.setContractNumber(form.getContract());
         project.setProjectNumber(form.getCode());
         project.setPartyA(form.getParty());
+        project.setRemark(form.getRemark());
+        project.setTotalFee(form.getTotalFee() == null ? null : new BigDecimal(form.getTotalFee()));
         project.setUpdatedBy(user.getId());
         project.setUpdatedTime(new Date());
         projectMapper.updateByPrimaryKey(project);
 
-        ProjectFeeExample feeExample = new ProjectFeeExample();
-        feeExample.createCriteria().andProjectIdEqualTo(project.getId());
-        ProjectFee fee = projectFeeMapper.selectByExample(feeExample).get(0);
-        fee.setUpdatedBy(user.getId());
-        fee.setUpdatedTime(new Date());
-        if (form.getStartPercent() != null)
-            fee.setStartPercent(new BigDecimal(form.getStartPercent()));
-        if (form.getMiddlePercent() != null)
-            fee.setMiddlePercent(new BigDecimal(form.getMiddlePercent()));
-        if (form.getFinalPercent() != null)
-            fee.setFinalPercent(new BigDecimal(form.getFinalPercent()));
-        if (form.getReviewPercent() != null)
-            fee.setReviewPercent(new BigDecimal(form.getReviewPercent()));
-        if (form.getPreliminaryPercent() != null)
-            fee.setPreliminaryResultPercent(new BigDecimal(form.getPreliminaryPercent()));
-        projectFeeMapper.updateByPrimaryKey(fee);
+        updateFee(project, form, user, false);
 
         return true;
+    }
+
+    private void updateFee(Project project, ProjectBaseForm form, User user, boolean isNew) {
+        if (form.getStartPercent() != null && "".equals(form.getStartPercent()))
+            form.setStartPercent(null);
+        if (form.getMiddlePercent() != null && "".equals(form.getMiddlePercent()))
+            form.setMiddlePercent(null);
+        if (form.getPreliminaryPercent() != null && "".equals(form.getPreliminaryPercent()))
+            form.setPreliminaryPercent(null);
+        if (form.getReviewPercent() != null && "".equals(form.getReviewPercent()))
+            form.setReviewPercent(null);
+        if (form.getFinalPercent() != null && "".equals(form.getFinalPercent()))
+            form.setFinalPercent(null);
+
+
+        ProjectFee fee;
+        if (isNew) {
+            fee = new ProjectFee();
+            fee.setCreatedBy(user.getId());
+            fee.setCreatedTime(new Date());
+            fee.setProjectId(project.getId());
+        } else {
+            ProjectFeeExample feeExample = new ProjectFeeExample();
+            feeExample.createCriteria().andProjectIdEqualTo(project.getId());
+            fee = projectFeeMapper.selectByExample(feeExample).get(0);
+            fee.setUpdatedBy(user.getId());
+            fee.setUpdatedTime(new Date());
+        }
+
+
+        if (form.getStartPercent() != null) {
+            fee.setStartPercent(new BigDecimal(form.getStartPercent()));
+
+            ProjectFinanceStepExample stepExample = new ProjectFinanceStepExample();
+            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_START_STEP);
+            long c = projectFinanceStepMapper.countByExample(stepExample);
+            if (c == 0) {
+                ProjectFinanceStep financeStep = new ProjectFinanceStep();
+                financeStep.setProjectId(project.getId());
+                financeStep.setStep(Constants.PROJECT_START_STEP);
+                financeStep.setCreateBy(user.getId());
+                financeStep.setCreateTime(new Date());
+                projectFinanceStepMapper.insert(financeStep);
+            }
+        } else {
+            fee.setStartPercent(null);
+            ProjectFinanceStepExample stepExample = new ProjectFinanceStepExample();
+            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_START_STEP);
+            projectFinanceStepMapper.deleteByExample(stepExample);
+        }
+
+        if (form.getMiddlePercent() != null) {
+            fee.setMiddlePercent(new BigDecimal(form.getMiddlePercent()));
+
+            ProjectFinanceStepExample stepExample = new ProjectFinanceStepExample();
+            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_MIDDLE_STEP);
+            long c = projectFinanceStepMapper.countByExample(stepExample);
+            if (c == 0) {
+                ProjectFinanceStep financeStep = new ProjectFinanceStep();
+                financeStep.setProjectId(project.getId());
+                financeStep.setStep(Constants.PROJECT_MIDDLE_STEP);
+                financeStep.setCreateBy(user.getId());
+                financeStep.setCreateTime(new Date());
+                projectFinanceStepMapper.insert(financeStep);
+            }
+        } else {
+            fee.setMiddlePercent(null);
+            ProjectFinanceStepExample stepExample = new ProjectFinanceStepExample();
+            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_MIDDLE_STEP);
+            projectFinanceStepMapper.deleteByExample(stepExample);
+        }
+
+        if (form.getFinalPercent() != null) {
+            fee.setFinalPercent(new BigDecimal(form.getFinalPercent()));
+
+            ProjectFinanceStepExample stepExample = new ProjectFinanceStepExample();
+            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_PRELIMINARY_STEP);
+            long c = projectFinanceStepMapper.countByExample(stepExample);
+            if (c == 0) {
+                ProjectFinanceStep financeStep = new ProjectFinanceStep();
+                financeStep.setProjectId(project.getId());
+                financeStep.setStep(Constants.PROJECT_PRELIMINARY_STEP);
+                financeStep.setCreateBy(user.getId());
+                financeStep.setCreateTime(new Date());
+                projectFinanceStepMapper.insert(financeStep);
+            }
+        } else {
+            fee.setPreliminaryResultPercent(null);
+            ProjectFinanceStepExample stepExample = new ProjectFinanceStepExample();
+            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_PRELIMINARY_STEP);
+            projectFinanceStepMapper.deleteByExample(stepExample);
+        }
+
+        if (form.getReviewPercent() != null) {
+            fee.setReviewPercent(new BigDecimal(form.getReviewPercent()));
+
+            ProjectFinanceStepExample stepExample = new ProjectFinanceStepExample();
+            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_REVIEW_STEP);
+            long c = projectFinanceStepMapper.countByExample(stepExample);
+            if (c == 0) {
+                ProjectFinanceStep financeStep = new ProjectFinanceStep();
+                financeStep.setProjectId(project.getId());
+                financeStep.setStep(Constants.PROJECT_REVIEW_STEP);
+                financeStep.setCreateBy(user.getId());
+                financeStep.setCreateTime(new Date());
+                projectFinanceStepMapper.insert(financeStep);
+            }
+        } else {
+            fee.setReviewPercent(null);
+            ProjectFinanceStepExample stepExample = new ProjectFinanceStepExample();
+            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_REVIEW_STEP);
+            projectFinanceStepMapper.deleteByExample(stepExample);
+        }
+
+        if (form.getPreliminaryPercent() != null) {
+            fee.setPreliminaryResultPercent(new BigDecimal(form.getPreliminaryPercent()));
+
+            ProjectFinanceStepExample stepExample = new ProjectFinanceStepExample();
+            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_FINAL_STEP);
+            long c = projectFinanceStepMapper.countByExample(stepExample);
+            if (c == 0) {
+                ProjectFinanceStep financeStep = new ProjectFinanceStep();
+                financeStep.setProjectId(project.getId());
+                financeStep.setStep(Constants.PROJECT_FINAL_STEP);
+                financeStep.setCreateBy(user.getId());
+                financeStep.setCreateTime(new Date());
+                projectFinanceStepMapper.insert(financeStep);
+            }
+        } else {
+            fee.setFinalPercent(null);
+            ProjectFinanceStepExample stepExample = new ProjectFinanceStepExample();
+            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_FINAL_STEP);
+            projectFinanceStepMapper.deleteByExample(stepExample);
+        }
+
+        if (isNew)
+            projectFeeMapper.insert(fee);
+        else
+            projectFeeMapper.updateByPrimaryKey(fee);
+    }
+
+
+    @Override
+    public String getProjectRemark(String token, Integer projectId) {
+        Project project = projectMapper.selectByPrimaryKey(projectId);
+        return project.getRemark();
     }
 
     @Override
@@ -325,5 +448,134 @@ public class ProjectServiceImpl implements ProjectService {
         project.setStatus(Constants.PROJECT_CLOSE);
         projectMapper.updateByPrimaryKeySelective(project);
         return true;
+    }
+
+    @Override
+    public MembersVO getAllMembers(String token,Integer projectID) {
+        MembersVO vo = new MembersVO();
+        vo.setManagers(new ArrayList<>());
+        vo.setLeaders(new ArrayList<>());
+        vo.setMembers(new ArrayList<>());
+        vo.setCanEditLeader(false);
+        vo.setCanEditManager(false);
+        vo.setCanEditMember(false);
+
+        User my = userMapper.findByToken(token);
+
+        ProjectManagerExample managerExample = new ProjectManagerExample();
+        managerExample.createCriteria().andProjectIdEqualTo(projectID);
+        List<ProjectManager> projectManagerList = projectManagerMapper.selectByExample(managerExample);
+        for (ProjectManager manager: projectManagerList){
+            UserVO u = new UserVO();
+            User user =userMapper.selectByPrimaryKey(manager.getUserId());
+            u.setName(user.getName());
+            u.setPhone(user.getPhone());
+            u.setAvatar(user.getAvatar());
+            vo.getManagers().add(u);
+
+            if (user.getId()==my.getId()){
+                vo.setCanEditLeader(true);
+                vo.setCanEditManager(true);
+            }
+        }
+
+        ProjectLeaderExample leaderExample = new ProjectLeaderExample();
+        leaderExample.createCriteria().andProjectIdEqualTo(projectID);
+        List<ProjectLeader> projectLeaderList = projectLeaderMapper.selectByExample(leaderExample);
+        for (ProjectLeader leader: projectLeaderList){
+            UserVO u = new UserVO();
+            User user =userMapper.selectByPrimaryKey(leader.getUserId());
+            u.setName(user.getName());
+            u.setPhone(user.getPhone());
+            u.setAvatar(user.getAvatar());
+            vo.getLeaders().add(u);
+
+            if (user.getId()==my.getId()){
+                vo.setCanEditMember(true);
+            }
+        }
+
+        ProjectMemberExample memberExample = new ProjectMemberExample();
+        memberExample.createCriteria().andProjectIdEqualTo(projectID);
+        List<ProjectMember> projectMemberList = projectMemberMapper.selectByExample(memberExample);
+        for (ProjectMember member: projectMemberList){
+            UserVO u = new UserVO();
+            User user =userMapper.selectByPrimaryKey(member.getUserId());
+            u.setName(user.getName());
+            u.setPhone(user.getPhone());
+            u.setAvatar(user.getAvatar());
+            vo.getMembers().add(u);
+        }
+
+
+        return vo;
+    }
+
+
+    public boolean userInProject(User user, Integer projectID) {
+        ProjectMemberExample example = new ProjectMemberExample();
+        example.createCriteria().andProjectIdEqualTo(projectID).andUserIdEqualTo(user.getId());
+        long count = projectMemberMapper.countByExample(example);
+        if (count == 1) {
+            return true;
+        } else {
+            ProjectManagerExample managerExample = new ProjectManagerExample();
+            managerExample.createCriteria().andProjectIdEqualTo(projectID).andUserIdEqualTo(user.getId());
+            count = projectManagerMapper.countByExample(managerExample);
+            if (count == 1) {
+                return true;
+            } else {
+                ProjectLeaderExample leaderExample = new ProjectLeaderExample();
+                leaderExample.createCriteria().andProjectIdEqualTo(projectID).andUserIdEqualTo(user.getId());
+                count = projectLeaderMapper.countByExample(leaderExample);
+                if (count == 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public List<UserItemVO> searchUsersForProject(Integer projectID, String content) {
+        List<UserItemVO> res = new ArrayList<>();
+        if (content == null || "".equals(content))
+            return res;
+        List<User> userList = searchUser(content);
+        if (userList.size() == 0)
+            return res;
+        for (User user : userList) {
+            UserItemVO vo = generate(user);
+            vo.setSelected(userInProject(user, projectID));
+            res.add(vo);
+        }
+        return res;
+    }
+
+    private UserItemVO generate(User user) {
+        UserItemVO vo = new UserItemVO();
+        vo.setId(user.getId());
+        vo.setName(user.getName());
+        vo.setPhone(user.getPhone());
+        vo.setAvatar(user.getAvatar());
+        return vo;
+    }
+
+    public List<User> searchUser(String content) {
+        UserExample userExample = new UserExample();
+        UserExample.Criteria criteria = userExample.createCriteria();
+        criteria.andNameLike("%" + content + "%");
+        criteria.andStatusEqualTo(Constants.USER_STATE_ACTIVE);
+
+        UserExample.Criteria criteria2 = userExample.createCriteria();
+        criteria2.andPhoneLike("%" + content + "%");
+        criteria2.andStatusEqualTo(Constants.USER_STATE_ACTIVE);
+
+        userExample.or(criteria2);
+
+        List<User> userList = userMapper.selectByExample(userExample);
+        return userList;
     }
 }

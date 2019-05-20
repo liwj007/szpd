@@ -8,7 +8,6 @@ import com.liwj.szpd.model.ProjectManager;
 import com.liwj.szpd.model.ProjectManagerExample;
 import com.liwj.szpd.model.User;
 import com.liwj.szpd.service.ProjectManagerService;
-import com.liwj.szpd.service.UserService;
 import com.liwj.szpd.vo.UserItemVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,11 +24,11 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
     @Autowired
     private ProjectManagerMapper projectManagerMapper;
 
-    @Autowired
-    private UserService userService;
+
 
     @Autowired
     private ProjectMapper projectMapper;
+
 
     @Override
     public List<UserItemVO> getManagers(Integer projectID) {
@@ -40,32 +39,6 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
         List<UserItemVO> res = new ArrayList<>();
         for (ProjectManager manager: lst){
             res.add(generate(manager));
-        }
-        return res;
-    }
-
-    @Override
-    public List<UserItemVO> searchUsersForManager(Integer projectID, String content) {
-
-
-        List<UserItemVO> res = new ArrayList<>();
-        if (content==null||"".equals(content))
-            return res;
-        List<User> userList = userService.searchUser(content);
-        if (userList.size()==0)
-            return res;
-        for (User user: userList){
-            UserItemVO vo = generate(user);
-            ProjectManagerExample example = new ProjectManagerExample();
-            example.createCriteria().andProjectIdEqualTo(projectID).andUserIdEqualTo(user.getId());
-            long count = projectManagerMapper.countByExample(example);
-            if (count==1){
-                vo.setSelected(true);
-            }else{
-                vo.setSelected(false);
-            }
-
-            res.add(vo);
         }
         return res;
     }
@@ -107,15 +80,6 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
             vo.setCanDelete(true);
         }
 
-        return vo;
-    }
-
-    private UserItemVO generate(User user){
-        UserItemVO vo = new UserItemVO();
-        vo.setId(user.getId());
-        vo.setName(user.getName());
-        vo.setPhone(user.getPhone());
-        vo.setAvatar(user.getAvatar());
         return vo;
     }
 }

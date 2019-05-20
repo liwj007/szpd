@@ -7,6 +7,16 @@ public class ProjectItemVO {
     private String date;
     private ProjectRightVO rights;
 
+    private boolean initStatus;
+
+    public boolean isInitStatus() {
+        return initStatus;
+    }
+
+    public void setInitStatus(boolean initStatus) {
+        this.initStatus = initStatus;
+    }
+
     public ProjectItemVO() {
         rights = new ProjectRightVO();
     }

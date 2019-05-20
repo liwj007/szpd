@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -36,8 +33,6 @@ public class UtilController {
     @Autowired
     private ProjectFeeMapper projectFeeMapper;
 
-    @Autowired
-    private ProjectFinanceMapper projectFinanceMapper;
 
     @Autowired
     private ProjectScheduleMapper projectScheduleMapper;
@@ -49,8 +44,7 @@ public class UtilController {
     private ProjectMemberMapper projectMemberMapper;
 
     @RequestMapping(value = "/export", method = RequestMethod.GET)
-    public JsonResult excel(HttpServletResponse response,
-                            @RequestParam(value = "token") String token,
+    public JsonResult excel(@RequestHeader(value = "token") String token,
                             @RequestParam(value = "type") Integer type) throws Exception {
         ExcelData data = new ExcelData();
 
@@ -199,20 +193,7 @@ public class UtilController {
             }
 
             if (type==0||type==3){
-                ProjectFinanceExample financeExample = new ProjectFinanceExample();
-                financeExample.createCriteria().andProjectIdEqualTo(project.getId());
-                List<ProjectFinance> projectFinances = projectFinanceMapper.selectByExample(financeExample);
-                ProjectFinance finance = projectFinances.get(0);
 
-                row.add(finance.getInvoice()==null?"":finance.getInvoice().setScale(2));
-
-                row.add(finance.getArrival()==null?"":finance.getArrival().setScale(2));
-
-                row.add(finance.getNoArrival()==null?"":finance.getNoArrival().setScale(2));
-
-                row.add(finance.getStepArrival()==null?"":finance.getStepArrival().setScale(2));
-
-                row.add(finance.getDebt()==null?"":finance.getDebt().setScale(2));
             }
 
             rows.add(row);

@@ -2,9 +2,10 @@ package com.liwj.szpd.service.impl;
 
 import com.liwj.szpd.mapper.ProjectLeaderMapper;
 import com.liwj.szpd.mapper.UserMapper;
-import com.liwj.szpd.model.*;
+import com.liwj.szpd.model.ProjectLeader;
+import com.liwj.szpd.model.ProjectLeaderExample;
+import com.liwj.szpd.model.User;
 import com.liwj.szpd.service.ProjectLeaderService;
-import com.liwj.szpd.service.UserService;
 import com.liwj.szpd.vo.UserItemVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,6 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
     @Autowired
     private UserMapper userMapper;
 
-    @Autowired
-    private UserService userService;
 
     @Override
     public List<UserItemVO> getLeaders(Integer projectID) {
@@ -31,37 +30,15 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         List<ProjectLeader> lst = projectLeaderMapper.selectByExample(example);
 
         List<UserItemVO> res = new ArrayList<>();
-        for (ProjectLeader leader: lst){
-           res.add(generate(leader));
+        for (ProjectLeader leader : lst) {
+            res.add(generate(leader));
         }
         return res;
     }
 
-    @Override
-    public List<UserItemVO> searchUsersForLeader(Integer projectID, String content) {
-        List<UserItemVO> res = new ArrayList<>();
-        if (content==null||"".equals(content))
-            return res;
-        List<User> userList = userService.searchUser(content);
-        if (userList.size()==0)
-            return res;
-        for (User user: userList){
-           UserItemVO vo = generate(user);
-           ProjectLeaderExample leaderExample = new ProjectLeaderExample();
-           leaderExample.createCriteria().andProjectIdEqualTo(projectID).andUserIdEqualTo(user.getId());
-           long count = projectLeaderMapper.countByExample(leaderExample);
-           if (count==1){
-               vo.setSelected(true);
-           }else{
-               vo.setSelected(false);
-           }
-           res.add(vo);
-        }
-        return res;
-    }
 
     @Override
-    public boolean selectUserForLeader(String token,Integer projectID, Integer userID) {
+    public boolean selectUserForLeader(String token, Integer projectID, Integer userID) {
         User user = userMapper.findByToken(token);
         ProjectLeader projectLeader = new ProjectLeader();
         projectLeader.setCreatedBy(user.getId());
@@ -81,10 +58,10 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         return true;
     }
 
-    private UserItemVO generate(ProjectLeader leader){
+    private UserItemVO generate(ProjectLeader leader) {
         UserItemVO vo = new UserItemVO();
         vo.setId(leader.getId());
-        User user =userMapper.selectByPrimaryKey(leader.getUserId());
+        User user = userMapper.selectByPrimaryKey(leader.getUserId());
         vo.setName(user.getName());
         vo.setPhone(user.getPhone());
         vo.setSelected(true);
@@ -92,12 +69,5 @@ public class ProjectLeaderServiceImpl implements ProjectLeaderService {
         return vo;
     }
 
-    private UserItemVO generate(User user){
-        UserItemVO vo = new UserItemVO();
-        vo.setId(user.getId());
-        vo.setName(user.getName());
-        vo.setPhone(user.getPhone());
-        vo.setAvatar(user.getAvatar());
-        return vo;
-    }
+
 }
