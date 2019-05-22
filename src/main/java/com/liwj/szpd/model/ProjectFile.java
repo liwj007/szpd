@@ -20,9 +20,11 @@ public class ProjectFile implements Serializable {
 
     private Integer projectId;
 
+    private Integer category;
+
     private static final long serialVersionUID = 1L;
 
-    public ProjectFile(Integer id, Integer revision, Integer createdBy, Date createdTime, Integer step, String name, String path, Integer projectId) {
+    public ProjectFile(Integer id, Integer revision, Integer createdBy, Date createdTime, Integer step, String name, String path, Integer projectId, Integer category) {
         this.id = id;
         this.revision = revision;
         this.createdBy = createdBy;
@@ -31,6 +33,7 @@ public class ProjectFile implements Serializable {
         this.name = name;
         this.path = path;
         this.projectId = projectId;
+        this.category = category;
     }
 
     public ProjectFile() {
@@ -101,6 +104,14 @@ public class ProjectFile implements Serializable {
         this.projectId = projectId;
     }
 
+    public Integer getCategory() {
+        return category;
+    }
+
+    public void setCategory(Integer category) {
+        this.category = category;
+    }
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -120,7 +131,8 @@ public class ProjectFile implements Serializable {
             && (this.getStep() == null ? other.getStep() == null : this.getStep().equals(other.getStep()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getPath() == null ? other.getPath() == null : this.getPath().equals(other.getPath()))
-            && (this.getProjectId() == null ? other.getProjectId() == null : this.getProjectId().equals(other.getProjectId()));
+            && (this.getProjectId() == null ? other.getProjectId() == null : this.getProjectId().equals(other.getProjectId()))
+            && (this.getCategory() == null ? other.getCategory() == null : this.getCategory().equals(other.getCategory()));
     }
 
     @Override
@@ -135,6 +147,7 @@ public class ProjectFile implements Serializable {
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getPath() == null) ? 0 : getPath().hashCode());
         result = prime * result + ((getProjectId() == null) ? 0 : getProjectId().hashCode());
+        result = prime * result + ((getCategory() == null) ? 0 : getCategory().hashCode());
         return result;
     }
 }

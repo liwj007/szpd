@@ -16,6 +16,8 @@ public interface ProjectService {
 
     ProjectBaseForm getProjectInfo(String token, Integer projectId);
 
+    List<Integer> getUserProjectIds(User user);
+
     boolean update(String token, ProjectBaseForm form);
 
     boolean close(String token, Integer id);

@@ -59,7 +59,9 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
         scheduleItem.setStep(Constants.PROJECT_START_STEP);
         scheduleItem.setPlanDate(schedule.getPlanStartUpDate() == null ? null : sdf.format(schedule.getPlanStartUpDate()));
         scheduleItem.setActualDate(schedule.getActualStartUpDate() == null ? null : sdf.format(schedule.getActualStartUpDate()));
-        scheduleItem.setFiles(boxFile(projectId, Constants.PROJECT_START_STEP));
+        scheduleItem.setcFiles(boxFile(projectId, Constants.PROJECT_START_STEP,Constants.FILE_CHECK));
+        scheduleItem.setpFiles(boxFile(projectId, Constants.PROJECT_START_STEP,Constants.FILE_MEETING_PHOTO));
+        scheduleItem.setmFiles(boxFile(projectId, Constants.PROJECT_START_STEP,Constants.FILE_MEETING_SUMMARY));
         scheduleItem.setStepName("项目启动");
         scheduleItemVOS.add(scheduleItem);
 
@@ -68,7 +70,9 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
         scheduleItem.setStep(Constants.PROJECT_MIDDLE_STEP);
         scheduleItem.setPlanDate(schedule.getPlanMiddleDate() == null ? null : sdf.format(schedule.getPlanMiddleDate()));
         scheduleItem.setActualDate(schedule.getActualMiddleDate() == null ? null : sdf.format(schedule.getActualMiddleDate()));
-        scheduleItem.setFiles(boxFile(projectId, Constants.PROJECT_MIDDLE_STEP));
+        scheduleItem.setcFiles(boxFile(projectId, Constants.PROJECT_MIDDLE_STEP,Constants.FILE_CHECK));
+        scheduleItem.setpFiles(boxFile(projectId, Constants.PROJECT_MIDDLE_STEP,Constants.FILE_MEETING_PHOTO));
+        scheduleItem.setmFiles(boxFile(projectId, Constants.PROJECT_MIDDLE_STEP,Constants.FILE_MEETING_SUMMARY));
         scheduleItem.setStepName("项目中期");
         scheduleItemVOS.add(scheduleItem);
 
@@ -77,7 +81,9 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
         scheduleItem.setStep(Constants.PROJECT_PRELIMINARY_STEP);
         scheduleItem.setPlanDate(schedule.getPlanPreliminaryResult() == null ? null : sdf.format(schedule.getPlanPreliminaryResult()));
         scheduleItem.setActualDate(schedule.getActualPreliminaryResult() == null ? null : sdf.format(schedule.getActualPreliminaryResult()));
-        scheduleItem.setFiles(boxFile(projectId, Constants.PROJECT_PRELIMINARY_STEP));
+        scheduleItem.setcFiles(boxFile(projectId, Constants.PROJECT_PRELIMINARY_STEP,Constants.FILE_CHECK));
+        scheduleItem.setpFiles(boxFile(projectId, Constants.PROJECT_PRELIMINARY_STEP,Constants.FILE_MEETING_PHOTO));
+        scheduleItem.setmFiles(boxFile(projectId, Constants.PROJECT_PRELIMINARY_STEP,Constants.FILE_MEETING_SUMMARY));
         scheduleItem.setStepName("初步成果");
         scheduleItemVOS.add(scheduleItem);
 
@@ -86,7 +92,10 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
         scheduleItem.setStep(Constants.PROJECT_REVIEW_STEP);
         scheduleItem.setPlanDate(schedule.getPlanReviewDate() == null ? null : sdf.format(schedule.getPlanReviewDate()));
         scheduleItem.setActualDate(schedule.getActualReviewDate() == null ? null : sdf.format(schedule.getActualReviewDate()));
-        scheduleItem.setFiles(boxFile(projectId, Constants.PROJECT_REVIEW_STEP));
+        scheduleItem.setcFiles(boxFile(projectId, Constants.PROJECT_REVIEW_STEP,Constants.FILE_CHECK));
+        scheduleItem.setpFiles(boxFile(projectId, Constants.PROJECT_REVIEW_STEP,Constants.FILE_MEETING_PHOTO));
+        scheduleItem.setmFiles(boxFile(projectId, Constants.PROJECT_REVIEW_STEP,Constants.FILE_MEETING_SUMMARY));
+
         scheduleItem.setStepName("评审验收");
         scheduleItemVOS.add(scheduleItem);
 
@@ -95,7 +104,9 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
         scheduleItem.setStep(Constants.PROJECT_FINAL_STEP);
         scheduleItem.setPlanDate(schedule.getPlanFinalDate() == null ? null : sdf.format(schedule.getPlanFinalDate()));
         scheduleItem.setActualDate(schedule.getActualFinalDate() == null ? null : sdf.format(schedule.getActualFinalDate()));
-        scheduleItem.setFiles(boxFile(projectId, Constants.PROJECT_FINAL_STEP));
+        scheduleItem.setcFiles(boxFile(projectId, Constants.PROJECT_FINAL_STEP,Constants.FILE_CHECK));
+        scheduleItem.setpFiles(boxFile(projectId, Constants.PROJECT_FINAL_STEP,Constants.FILE_MEETING_PHOTO));
+        scheduleItem.setmFiles(boxFile(projectId, Constants.PROJECT_FINAL_STEP,Constants.FILE_MEETING_SUMMARY));
         scheduleItem.setStepName("最终成果");
         scheduleItemVOS.add(scheduleItem);
 
@@ -123,34 +134,44 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
             case Constants.PROJECT_START_STEP:
                 scheduleItem.setPlanDate(schedule.getPlanStartUpDate() == null ? null : sdf.format(schedule.getPlanStartUpDate()));
                 scheduleItem.setActualDate(schedule.getActualStartUpDate() == null ? null : sdf.format(schedule.getActualStartUpDate()));
-                scheduleItem.setFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_START_STEP));
+                scheduleItem.setcFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_START_STEP,Constants.FILE_CHECK));
+                scheduleItem.setpFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_START_STEP,Constants.FILE_MEETING_PHOTO));
+                scheduleItem.setmFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_START_STEP,Constants.FILE_MEETING_SUMMARY));
                 break;
             case Constants.PROJECT_MIDDLE_STEP:
                 scheduleItem.setPlanDate(schedule.getPlanMiddleDate() == null ? null : sdf.format(schedule.getPlanMiddleDate()));
                 scheduleItem.setActualDate(schedule.getActualMiddleDate() == null ? null : sdf.format(schedule.getActualMiddleDate()));
-                scheduleItem.setFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_MIDDLE_STEP));
+                scheduleItem.setcFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_MIDDLE_STEP,Constants.FILE_CHECK));
+                scheduleItem.setpFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_MIDDLE_STEP,Constants.FILE_MEETING_PHOTO));
+                scheduleItem.setmFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_MIDDLE_STEP,Constants.FILE_MEETING_SUMMARY));
                 break;
             case Constants.PROJECT_PRELIMINARY_STEP:
                 scheduleItem.setPlanDate(schedule.getPlanPreliminaryResult() == null ? null : sdf.format(schedule.getPlanPreliminaryResult()));
                 scheduleItem.setActualDate(schedule.getActualPreliminaryResult() == null ? null : sdf.format(schedule.getActualPreliminaryResult()));
-                scheduleItem.setFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_PRELIMINARY_STEP));
+                scheduleItem.setcFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_PRELIMINARY_STEP,Constants.FILE_CHECK));
+                scheduleItem.setpFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_PRELIMINARY_STEP,Constants.FILE_MEETING_PHOTO));
+                scheduleItem.setmFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_PRELIMINARY_STEP,Constants.FILE_MEETING_SUMMARY));
                 break;
             case Constants.PROJECT_REVIEW_STEP:
                 scheduleItem.setPlanDate(schedule.getPlanReviewDate() == null ? null : sdf.format(schedule.getPlanReviewDate()));
                 scheduleItem.setActualDate(schedule.getActualReviewDate() == null ? null : sdf.format(schedule.getActualReviewDate()));
-                scheduleItem.setFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_REVIEW_STEP));
+                scheduleItem.setcFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_REVIEW_STEP,Constants.FILE_CHECK));
+                scheduleItem.setpFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_REVIEW_STEP,Constants.FILE_MEETING_PHOTO));
+                scheduleItem.setmFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_REVIEW_STEP,Constants.FILE_MEETING_SUMMARY));
                 break;
             case Constants.PROJECT_FINAL_STEP:
                 scheduleItem.setPlanDate(schedule.getPlanFinalDate() == null ? null : sdf.format(schedule.getPlanFinalDate()));
                 scheduleItem.setActualDate(schedule.getActualFinalDate() == null ? null : sdf.format(schedule.getActualFinalDate()));
-                scheduleItem.setFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_FINAL_STEP));
+                scheduleItem.setcFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_FINAL_STEP,Constants.FILE_CHECK));
+                scheduleItem.setpFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_FINAL_STEP,Constants.FILE_MEETING_PHOTO));
+                scheduleItem.setmFiles(boxFile(schedule.getProjectId(), Constants.PROJECT_FINAL_STEP,Constants.FILE_MEETING_SUMMARY));
                 break;
         }
         return scheduleItem;
     }
 
     @Override
-    public boolean updateStep(String token, Integer scheduleId, Integer step, String actualDate, List<String> files) {
+    public boolean updateStep(String token, Integer scheduleId, Integer step, String actualDate, List<String> cFiles, List<String> pFiles, List<String> mFiles) {
         ProjectSchedule schedule = projectScheduleMapper.selectByPrimaryKey(scheduleId);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         User user = userMapper.findByToken(token);
@@ -175,28 +196,76 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
             schedule.setUpdatedTime(new Date());
             projectScheduleMapper.updateByPrimaryKeySelective(schedule);
 
+//            ProjectFileExample fileExample = new ProjectFileExample();
+//            fileExample.createCriteria().andProjectIdEqualTo(schedule.getProjectId()).andStepEqualTo(step);
+//            projectFileMapper.deleteByExample(fileExample);
+
             ProjectFileExample fileExample = new ProjectFileExample();
             fileExample.createCriteria().andProjectIdEqualTo(schedule.getProjectId()).andStepEqualTo(step);
-            projectFileMapper.deleteByExample(fileExample);
-
-            for (String file : files) {
-                ProjectFile projectFile = new ProjectFile();
-                projectFile.setStep(step);
-                projectFile.setProjectId(schedule.getProjectId());
-                projectFile.setPath(file);
-                projectFile.setCreatedTime(new Date());
-                projectFile.setCreatedBy(user.getId());
-                projectFileMapper.insert(projectFile);
+            List<ProjectFile> currentFiles = projectFileMapper.selectByExample(fileExample);
+            List<String> currentFilePath = new ArrayList<>();
+            for (ProjectFile file: currentFiles){
+                currentFilePath.add(file.getPath());
             }
+
+            for (String file : cFiles) {
+                if (!currentFilePath.contains(file)){
+                    ProjectFile projectFile = new ProjectFile();
+                    projectFile.setStep(step);
+                    projectFile.setProjectId(schedule.getProjectId());
+                    projectFile.setPath(file);
+                    projectFile.setCreatedTime(new Date());
+                    projectFile.setCreatedBy(user.getId());
+                    projectFile.setCategory(Constants.FILE_CHECK);
+                    projectFileMapper.insert(projectFile);
+                }else{
+                    currentFilePath.remove(file);
+                }
+            }
+
+
+            for (String file : pFiles) {
+                if (!currentFilePath.contains(file)){
+                    ProjectFile projectFile = new ProjectFile();
+                    projectFile.setStep(step);
+                    projectFile.setProjectId(schedule.getProjectId());
+                    projectFile.setPath(file);
+                    projectFile.setCreatedTime(new Date());
+                    projectFile.setCreatedBy(user.getId());
+                    projectFile.setCategory(Constants.FILE_MEETING_PHOTO);
+                    projectFileMapper.insert(projectFile);
+                }else{
+                    currentFilePath.remove(file);
+                }
+            }
+
+
+            for (String file : mFiles) {
+                if (!currentFilePath.contains(file)){
+                    ProjectFile projectFile = new ProjectFile();
+                    projectFile.setStep(step);
+                    projectFile.setProjectId(schedule.getProjectId());
+                    projectFile.setPath(file);
+                    projectFile.setCreatedTime(new Date());
+                    projectFile.setCreatedBy(user.getId());
+                    projectFile.setCategory(Constants.FILE_MEETING_SUMMARY);
+                    projectFileMapper.insert(projectFile);
+                }else{
+                    currentFilePath.remove(file);
+                }
+            }
+            ProjectFileExample delFileExample = new ProjectFileExample();
+            delFileExample.createCriteria().andPathIn(currentFilePath);
+            projectFileMapper.deleteByExample(delFileExample);
         } catch (Exception e) {
             return false;
         }
         return true;
     }
 
-    private ArrayList boxFile(Integer projectId, Integer step) {
+    private ArrayList boxFile(Integer projectId, Integer step,Integer category) {
         ProjectFileExample fileExample = new ProjectFileExample();
-        fileExample.createCriteria().andProjectIdEqualTo(projectId).andStepEqualTo(step);
+        fileExample.createCriteria().andProjectIdEqualTo(projectId).andStepEqualTo(step).andCategoryEqualTo(category);
         List<ProjectFile> files = projectFileMapper.selectByExample(fileExample);
         ArrayList<ProjectFileVO> res = new ArrayList<>();
         for (ProjectFile file : files) {

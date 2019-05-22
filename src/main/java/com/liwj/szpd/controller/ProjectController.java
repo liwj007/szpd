@@ -31,8 +31,8 @@ public class ProjectController {
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public JsonResult getMyProjects(@RequestHeader(value = "token") String token,
                                     @RequestParam(value = "content") String content,
-                                    @RequestParam(value = "page") Integer page,
-                                    @RequestParam(value = "size") Integer size) {
+                                    @RequestParam(value = "pageNo") Integer page,
+                                    @RequestParam(value = "pageSize") Integer size) {
         PageResult<ProjectItemVO> res = projectService.getMyProjects(token, content, page, size);
 
         return JsonResult.renderSuccess(res);

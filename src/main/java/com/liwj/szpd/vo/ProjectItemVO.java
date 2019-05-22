@@ -1,11 +1,39 @@
 package com.liwj.szpd.vo;
 
 public class ProjectItemVO {
+    private Integer key;
     private Integer id;
     private String name;
     private String iconName;
     private String date;
     private ProjectRightVO rights;
+    private String no;
+
+    private Integer status;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public Integer getKey() {
+        return key;
+    }
+
+    public void setKey(Integer key) {
+        this.key = key;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getNo() {
+        return no;
+    }
+
+    public void setNo(String no) {
+        this.no = no;
+    }
 
     private boolean initStatus;
 
@@ -35,6 +63,7 @@ public class ProjectItemVO {
 
     public void setId(Integer id) {
         this.id = id;
+        this.key = id;
     }
 
     public String getName() {

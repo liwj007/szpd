@@ -23,4 +23,6 @@ public interface UserService {
     boolean checkTreasurerRole(String token,Integer projectId);
 
     UserVO getInfo(String token);
+
+    String webLogin(String username, String password);
 }

@@ -1,6 +1,7 @@
 package com.liwj.szpd.service;
 
 import com.liwj.szpd.vo.FinanceInfoVO;
+import com.liwj.szpd.vo.FinanceStatisticVO;
 import com.liwj.szpd.vo.FinanceStepVO;
 import com.liwj.szpd.vo.FinanceVO;
 
@@ -14,4 +15,6 @@ public interface ProjectFeeService {
     FinanceInfoVO getFinanceStepInfo(String token,Integer stepId);
 
     boolean update(String token, FinanceStepVO form);
+
+    FinanceStatisticVO statisticFinanceInfo(Integer projectID);
 }

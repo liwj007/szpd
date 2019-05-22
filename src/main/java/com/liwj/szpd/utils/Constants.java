@@ -17,11 +17,15 @@ public class Constants {
 
     public static final int PROJECT_NEW = 0;
     public static final int PROJECT_DOING = 1;
-    public static final int PROJECT_CLOSE = 1;
+    public static final int PROJECT_CLOSE = 2;
 
     public static final String SUCCESS = "执行成功";
 
     public static final int ROLE_CREATOR = 0 ;
     public static final int ROLE_COMMON = 1 ;
     public static final int ROLE_FINANCE = 2 ;
+
+    public static final int FILE_CHECK = 0 ;
+    public static final int FILE_MEETING_PHOTO = 1 ;
+    public static final int FILE_MEETING_SUMMARY = 2 ;
 }

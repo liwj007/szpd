@@ -176,14 +176,17 @@ public class ProjectFeeServiceImpl implements ProjectFeeService {
         return false;
     }
 
+    @Override
     public FinanceStatisticVO statisticFinanceInfo(Integer projectID) {
         FinanceStatisticVO vo = new FinanceStatisticVO();
 
         ProjectFeeExample feeExample = new ProjectFeeExample();
         feeExample.createCriteria().andProjectIdEqualTo(projectID);
         List<ProjectFee> projectFees = projectFeeMapper.selectByExample(feeExample);
-        if (projectFees.size() == 0)
+        if (projectFees.size() == 0){
             return vo;
+        }
+
         ProjectFee projectFee = projectFees.get(0);
 
         ProjectScheduleExample scheduleExample = new ProjectScheduleExample();

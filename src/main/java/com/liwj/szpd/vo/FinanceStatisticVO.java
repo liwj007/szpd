@@ -7,6 +7,16 @@ public class FinanceStatisticVO {
     private double invoiceNoAccount;
     private double debt;
 
+    private boolean flag;
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
+    }
+
     public double getStepNoInvoice() {
         return stepNoInvoice;
     }

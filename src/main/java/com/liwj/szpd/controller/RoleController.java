@@ -19,7 +19,7 @@ public class RoleController {
 
     @RequestMapping(value = "/manager", method = RequestMethod.GET)
     public JsonResult checkMangerRole(@RequestHeader(value = "token") String token,
-                                      @RequestParam(value = "id") Integer id) {
+                                      @RequestParam(value = "id", required = false) Integer id) {
         boolean flag = userService.checkMangerRole(token,id);
         return JsonResult.renderSuccess(flag);
     }

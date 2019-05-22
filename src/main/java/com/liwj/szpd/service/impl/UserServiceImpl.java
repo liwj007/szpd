@@ -252,13 +252,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean checkMangerRole(String token, Integer projectId) {
         User user = userMapper.findByToken(token);
-        ProjectManagerExample example = new ProjectManagerExample();
-        example.createCriteria().andProjectIdEqualTo(projectId).andUserIdEqualTo(user.getId());
-        long c = projectManagerMapper.countByExample(example);
-        if (c == 0)
-            return false;
-        else
-            return true;
+        if (projectId!=null){
+            ProjectManagerExample example = new ProjectManagerExample();
+            example.createCriteria().andProjectIdEqualTo(projectId).andUserIdEqualTo(user.getId());
+            long c = projectManagerMapper.countByExample(example);
+            if (c == 0)
+                return false;
+            else
+                return true;
+        }else{
+            ProjectManagerExample example = new ProjectManagerExample();
+            example.createCriteria().andUserIdEqualTo(user.getId());
+            long c = projectManagerMapper.countByExample(example);
+            if (c == 0)
+                return false;
+            else
+                return true;
+        }
     }
 
     @Override
@@ -301,5 +311,17 @@ public class UserServiceImpl implements UserService {
         }
 
         return vo;
+    }
+
+    @Override
+    public String webLogin(String username, String password) {
+        UserExample example = new UserExample();
+        example.createCriteria().andPhoneEqualTo(username);
+        List<User> userList = userMapper.selectByExample(example);
+        if (userList.size()==0){
+            return null;
+        }
+        User user = userList.get(0);
+        return user.getToken();
     }
 }

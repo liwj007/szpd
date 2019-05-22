@@ -5,7 +5,9 @@ import java.util.List;
 public class ScheduleItemVO {
     private String planDate;
     private String actualDate;
-    private List<ProjectFileVO> files;
+    private List<ProjectFileVO> cFiles;
+    private List<ProjectFileVO> pFiles;
+    private List<ProjectFileVO> mFiles;
     private Integer step;
     private String stepName;
 
@@ -33,12 +35,28 @@ public class ScheduleItemVO {
         this.actualDate = actualDate;
     }
 
-    public List<ProjectFileVO> getFiles() {
-        return files;
+    public List<ProjectFileVO> getcFiles() {
+        return cFiles;
     }
 
-    public void setFiles(List<ProjectFileVO> files) {
-        this.files = files;
+    public void setcFiles(List<ProjectFileVO> cFiles) {
+        this.cFiles = cFiles;
+    }
+
+    public List<ProjectFileVO> getpFiles() {
+        return pFiles;
+    }
+
+    public void setpFiles(List<ProjectFileVO> pFiles) {
+        this.pFiles = pFiles;
+    }
+
+    public List<ProjectFileVO> getmFiles() {
+        return mFiles;
+    }
+
+    public void setmFiles(List<ProjectFileVO> mFiles) {
+        this.mFiles = mFiles;
     }
 
     public Integer getStep() {

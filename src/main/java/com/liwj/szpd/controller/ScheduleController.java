@@ -40,10 +40,12 @@ public class ScheduleController {
                                  @RequestParam(value = "id") Integer scheduleId,
                                  @RequestParam(value = "step") Integer step,
                                  @RequestParam(value = "actualDate") String actualDate,
-                                 @RequestParam(value = "files") List<String> files) {
+                                 @RequestParam(value = "cfiles") List<String> cFiles,
+                                 @RequestParam(value = "pfiles") List<String> pFiles,
+                                 @RequestParam(value = "mfiles") List<String> mFiles) {
         if (actualDate != null && "null".equals(actualDate))
             actualDate = null;
-        boolean flag = projectScheduleService.updateStep(token, scheduleId, step, actualDate, files);
+        boolean flag = projectScheduleService.updateStep(token, scheduleId, step, actualDate, cFiles,pFiles,mFiles);
         if (flag) {
             return JsonResult.renderSuccess();
         } else {

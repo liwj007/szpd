@@ -19,7 +19,7 @@ public interface ProjectScheduleService {
 
     ScheduleItemVO getScheduleStepInfo(String token, Integer scheduleId, Integer step);
 
-    boolean updateStep(String token, Integer scheduleId, Integer step,  String actualDate, List<String> files);
+    boolean updateStep(String token, Integer scheduleId, Integer step,  String actualDate, List<String> cFiles, List<String> pFiles, List<String> mFiles);
 
     boolean updateDates(String token, ProjectDateForm projectDateForm);
 

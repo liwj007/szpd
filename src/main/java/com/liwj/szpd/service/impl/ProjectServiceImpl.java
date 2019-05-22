@@ -164,6 +164,8 @@ public class ProjectServiceImpl implements ProjectService {
             vo.setName(project.getName());
             vo.setIconName(ChinesePinyinUtil.getPinYinFirstHeadChar(project.getName()));
             vo.setInitStatus(true);
+            vo.setNo(project.getProjectNumber());
+            vo.setStatus(project.getStatus());
 
             ProjectManagerExample managerExample = new ProjectManagerExample();
             managerExample.createCriteria().andUserIdEqualTo(user.getId()).andProjectIdEqualTo(project.getId());
@@ -235,7 +237,8 @@ public class ProjectServiceImpl implements ProjectService {
         return form;
     }
 
-    private List<Integer> getUserProjectIds(User user) {
+    @Override
+    public List<Integer> getUserProjectIds(User user) {
         List<Integer> projectIds = new ArrayList<>();
 
         ProjectLeaderExample leaderExample = new ProjectLeaderExample();
