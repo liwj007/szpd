@@ -2,8 +2,10 @@ package com.liwj.szpd.controller;
 
 import com.liwj.szpd.mapper.*;
 import com.liwj.szpd.model.*;
+import com.liwj.szpd.service.ProjectFeeService;
 import com.liwj.szpd.service.ProjectService;
 import com.liwj.szpd.utils.*;
+import com.liwj.szpd.vo.FinanceStatisticVO;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -59,11 +61,15 @@ public class UtilController {
     @Autowired
     private InvoiceFileMapper invoiceFileMapper;
 
+    @Autowired
+    private ProjectFeeService projectFeeService;
+
     private final static String uploadPath = "/Users/liwj/Documents/uploads/tmp/";
 
     @RequestMapping(value = "/export", method = RequestMethod.GET)
-    public JsonResult excel(@RequestHeader(value = "token") String token,
-                            @RequestParam(value = "type") Integer type) throws Exception {
+    public void excel(@RequestParam(value = "token") String token,
+                      @RequestParam(value = "type") Integer type,
+                      HttpServletResponse response) throws Exception {
         ExcelData data = new ExcelData();
 
         switch (type) {
@@ -113,11 +119,11 @@ public class UtilController {
         }
 
         if (type == 0 || type == 3) {
-            titles.add("总开票情况");
-            titles.add("总到账情况");
-            titles.add("开票未到账情况");
-            titles.add("基于结点未到账情况");
-            titles.add("待催款数额");
+            titles.add("基于结点未开票金额");
+            titles.add("开票金额");
+            titles.add("到账金额");
+            titles.add("开票未到账金额");
+            titles.add("待催款金额");
         }
 
         List<List<Object>> rows = new ArrayList();
@@ -211,7 +217,13 @@ public class UtilController {
             }
 
             if (type == 0 || type == 3) {
+                FinanceStatisticVO statisticVO = projectFeeService.statisticFinanceInfo(project.getId());
 
+                row.add(statisticVO.getStepNoInvoice());
+                row.add(statisticVO.getInvoice());
+                row.add(statisticVO.getAccount());
+                row.add(statisticVO.getInvoiceNoAccount());
+                row.add(statisticVO.getDebt());
             }
 
             rows.add(row);
@@ -222,30 +234,24 @@ public class UtilController {
 
 
         //生成本地
-        SimpleDateFormat fdate = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+        SimpleDateFormat fdate = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
         String fileName = fdate.format(new Date()) + ".xlsx";
         File f = new File("/tmp/" + fileName);
-        FileOutputStream out = new FileOutputStream(f);
-        ExcelUtils.exportExcel(data, out);
-        out.close();
+//        FileOutputStream out = new FileOutputStream(f);
+//        ExcelUtils.exportExcel(data, out);
+//        out.close();
 
-//        ExcelUtils.exportExcel(response,fileName,data);
+        ExcelUtils.exportExcel(response, fileName, data);
 
-        FileSystemResource resource = new FileSystemResource(f);
-        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
-        param.add("file", resource);
-
-        JsonResult result = PostHTTP.sendPostRequest("https://www.shared-parking.cn/fs/upload_file", param);
-        return JsonResult.renderSuccess(Constants.SUCCESS, result.getData());
     }
 
     @RequestMapping(value = "/export_finance", method = RequestMethod.GET)
     public void exportProjectFinanceFiles(@RequestParam(value = "token") String token,
-                                   @RequestParam(value = "id") Integer id,
-                                   HttpServletResponse response) throws Exception {
+                                          @RequestParam(value = "id") Integer id,
+                                          HttpServletResponse response) throws Exception {
 
         String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-        String baseFilePath = uploadPath + uuid +"/";
+        String baseFilePath = uploadPath + uuid + "/";
         File baseFileDir = new File(baseFilePath);
         if (!baseFileDir.exists()) {
             baseFileDir.mkdir();
@@ -254,7 +260,7 @@ public class UtilController {
         InvoiceFileExample invoiceFileExample = new InvoiceFileExample();
         invoiceFileExample.createCriteria().andProjectIdEqualTo(id);
         List<InvoiceFile> invoiceFiles = invoiceFileMapper.selectByExample(invoiceFileExample);
-        for (InvoiceFile invoiceFile: invoiceFiles){
+        for (InvoiceFile invoiceFile : invoiceFiles) {
             URL httpurl = new URL(invoiceFile.getPath());
             String[] tmp = invoiceFile.getPath().split("/");
             FileUtils.copyURLToFile(httpurl, new File(baseFilePath + tmp[tmp.length - 1]));
@@ -405,9 +411,9 @@ public class UtilController {
                     ProjectTreasurerExample treasurerExample = new ProjectTreasurerExample();
                     treasurerExample.createCriteria().andProjectIdEqualTo(projectID).andUserIdEqualTo(userID);
                     c = projectTreasurerMapper.countByExample(treasurerExample);
-                    if (c>0){
-                        return  "财务人员";
-                    }else{
+                    if (c > 0) {
+                        return "财务人员";
+                    } else {
                         return "其他";
                     }
                 }
@@ -444,7 +450,7 @@ public class UtilController {
             cell.setCellValue("新增结点");
 
             List<Integer> projectIds = projectService.getUserProjectIds(targetUser);
-            if (projectIds.size()==0)
+            if (projectIds.size() == 0)
                 continue;
             ProjectExample projectExample = new ProjectExample();
             projectExample.createCriteria().andIdIn(projectIds).andStatusNotEqualTo(Constants.PROJECT_CLOSE);

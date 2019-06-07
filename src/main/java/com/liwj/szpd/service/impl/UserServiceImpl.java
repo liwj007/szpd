@@ -64,6 +64,7 @@ public class UserServiceImpl implements UserService {
             user.setRevision(0);
             user.setAvatar(avatar);
             user.setName(name);
+            userMapper.insert(user);
 
             String token = TokenProcessor.getInstance().sign(user.getName(),user.getId().toString());
             if (token == null) {
@@ -71,7 +72,7 @@ public class UserServiceImpl implements UserService {
             }
             Calendar c = Calendar.getInstance();
             setUserToken(user, token, c);
-            userMapper.insert(user);
+            userMapper.updateByPrimaryKeySelective(user);
             return token;
         } else if (users.size() == 1) {
             User user = users.get(0);
@@ -99,7 +100,7 @@ public class UserServiceImpl implements UserService {
     public String checkActive(String token) {
         User user = userMapper.findByToken(token);
         if (user == null)
-            return null;
+            return "no_user";
         if (user.getPhone() == null || user.getPhone().equals(""))
             return null;
         Calendar c = Calendar.getInstance();

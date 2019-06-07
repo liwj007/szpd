@@ -373,20 +373,20 @@ public class ProjectServiceImpl implements ProjectService {
             fee.setFinalPercent(new BigDecimal(form.getFinalPercent()));
 
             ProjectFinanceStepExample stepExample = new ProjectFinanceStepExample();
-            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_PRELIMINARY_STEP);
+            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_FINAL_STEP);
             long c = projectFinanceStepMapper.countByExample(stepExample);
             if (c == 0) {
                 ProjectFinanceStep financeStep = new ProjectFinanceStep();
                 financeStep.setProjectId(project.getId());
-                financeStep.setStep(Constants.PROJECT_PRELIMINARY_STEP);
+                financeStep.setStep(Constants.PROJECT_FINAL_STEP);
                 financeStep.setCreateBy(user.getId());
                 financeStep.setCreateTime(new Date());
                 projectFinanceStepMapper.insert(financeStep);
             }
         } else {
-            fee.setPreliminaryResultPercent(null);
+            fee.setFinalPercent(null);
             ProjectFinanceStepExample stepExample = new ProjectFinanceStepExample();
-            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_PRELIMINARY_STEP);
+            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_FINAL_STEP);
             projectFinanceStepMapper.deleteByExample(stepExample);
         }
 
@@ -415,20 +415,20 @@ public class ProjectServiceImpl implements ProjectService {
             fee.setPreliminaryResultPercent(new BigDecimal(form.getPreliminaryPercent()));
 
             ProjectFinanceStepExample stepExample = new ProjectFinanceStepExample();
-            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_FINAL_STEP);
+            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_PRELIMINARY_STEP);
             long c = projectFinanceStepMapper.countByExample(stepExample);
             if (c == 0) {
                 ProjectFinanceStep financeStep = new ProjectFinanceStep();
                 financeStep.setProjectId(project.getId());
-                financeStep.setStep(Constants.PROJECT_FINAL_STEP);
+                financeStep.setStep(Constants.PROJECT_PRELIMINARY_STEP);
                 financeStep.setCreateBy(user.getId());
                 financeStep.setCreateTime(new Date());
                 projectFinanceStepMapper.insert(financeStep);
             }
         } else {
-            fee.setFinalPercent(null);
+            fee.setPreliminaryResultPercent(null);
             ProjectFinanceStepExample stepExample = new ProjectFinanceStepExample();
-            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_FINAL_STEP);
+            stepExample.createCriteria().andProjectIdEqualTo(project.getId()).andStepEqualTo(Constants.PROJECT_PRELIMINARY_STEP);
             projectFinanceStepMapper.deleteByExample(stepExample);
         }
 

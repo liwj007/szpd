@@ -9,6 +9,8 @@ server:
   servlet:
     context-path: /szpd
 spring:
+  jmx:
+    default-domain: szpd
   jackson:
     serialization:
       indent_output: true

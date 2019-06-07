@@ -49,6 +49,10 @@ public class UserController {
     @RequestMapping(value = "/isActive", method = RequestMethod.GET)
     public JsonResult isActive(@RequestHeader(value = "token") String token) {
         String newToken = userService.checkActive(token);
+        if (newToken==null)
+            return JsonResult.renderFail();
+        if (newToken.equals("no_user"))
+            return JsonResult.renderFail("no_user");
         return JsonResult.renderSuccess(Constants.SUCCESS, newToken);
     }
 
