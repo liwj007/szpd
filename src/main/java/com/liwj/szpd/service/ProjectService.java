@@ -27,4 +27,6 @@ public interface ProjectService {
     MembersVO getAllMembers(String token,Integer projectID);
 
     List<UserItemVO> searchUsersForProject(Integer projectID, String content);
+
+    String getProjectName(String token, Integer projectId);
 }

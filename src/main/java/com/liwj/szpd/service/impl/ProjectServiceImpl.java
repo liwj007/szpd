@@ -103,6 +103,15 @@ public class ProjectServiceImpl implements ProjectService {
         return true;
     }
 
+    @Override
+    public String getProjectName(String token, Integer projectId) {
+        Project project = projectMapper.selectByPrimaryKey(projectId);
+        if (project==null){
+            return null;
+        }
+        return project.getName();
+    }
+
     private void generateProjectTreasureMapper(Project project, User creator) {
 
 
@@ -188,7 +197,7 @@ public class ProjectServiceImpl implements ProjectService {
 
             res.add(vo);
         }
-        return new PageResult<>(pageInfo.getPageNum(), pageInfo.getSize(), pageInfo.getTotal(), res);
+        return new PageResult<>(pageInfo.getPageNum(), pageInfo.getPageSize(), pageInfo.getTotal(), res);
     }
 
     @Override

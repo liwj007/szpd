@@ -18,6 +18,7 @@
       <arg column="STATUS" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="TOEKN_EXPERIE" javaType="java.lang.Long" jdbcType="BIGINT" />
       <arg column="NAME" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="PASSWORD" javaType="java.lang.String" jdbcType="VARCHAR" />
     </constructor>
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -80,7 +81,7 @@
   </sql>
   <sql id="Base_Column_List">
     ID, REVISION, CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, OPEN_ID, PHONE, 
-    SESSION_KEY, TOKEN, AVATAR, ORG_ID, STATUS, TOEKN_EXPERIE, NAME
+    SESSION_KEY, TOKEN, AVATAR, ORG_ID, STATUS, TOEKN_EXPERIE, NAME, PASSWORD
   </sql>
   <select id="selectByExample" parameterType="com.liwj.szpd.model.UserExample" resultMap="BaseResultMap">
     select
@@ -121,12 +122,14 @@
       UPDATED_BY, UPDATED_TIME, OPEN_ID, 
       PHONE, SESSION_KEY, TOKEN, 
       AVATAR, ORG_ID, STATUS, 
-      TOEKN_EXPERIE, NAME)
+      TOEKN_EXPERIE, NAME, PASSWORD
+      )
     values (#{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=INTEGER}, #{createdTime,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=INTEGER}, #{updatedTime,jdbcType=TIMESTAMP}, #{openId,jdbcType=VARCHAR}, 
       #{phone,jdbcType=VARCHAR}, #{sessionKey,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR}, 
       #{avatar,jdbcType=VARCHAR}, #{orgId,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, 
-      #{toeknExperie,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR})
+      #{toeknExperie,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.liwj.szpd.model.User">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -176,6 +179,9 @@
       <if test="name != null">
         NAME,
       </if>
+      <if test="password != null">
+        PASSWORD,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="revision != null">
@@ -219,6 +225,9 @@
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -276,6 +285,9 @@
       <if test="record.name != null">
         NAME = #{record.name,jdbcType=VARCHAR},
       </if>
+      <if test="record.password != null">
+        PASSWORD = #{record.password,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -297,7 +309,8 @@
       ORG_ID = #{record.orgId,jdbcType=INTEGER},
       STATUS = #{record.status,jdbcType=VARCHAR},
       TOEKN_EXPERIE = #{record.toeknExperie,jdbcType=BIGINT},
-      NAME = #{record.name,jdbcType=VARCHAR}
+      NAME = #{record.name,jdbcType=VARCHAR},
+      PASSWORD = #{record.password,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -347,6 +360,9 @@
       <if test="name != null">
         NAME = #{name,jdbcType=VARCHAR},
       </if>
+      <if test="password != null">
+        PASSWORD = #{password,jdbcType=VARCHAR},
+      </if>
     </set>
     where ID = #{id,jdbcType=INTEGER}
   </update>
@@ -365,7 +381,8 @@
       ORG_ID = #{orgId,jdbcType=INTEGER},
       STATUS = #{status,jdbcType=VARCHAR},
       TOEKN_EXPERIE = #{toeknExperie,jdbcType=BIGINT},
-      NAME = #{name,jdbcType=VARCHAR}
+      NAME = #{name,jdbcType=VARCHAR},
+      PASSWORD = #{password,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=INTEGER}
   </update>
   <select id="findByToken" resultMap="BaseResultMap">

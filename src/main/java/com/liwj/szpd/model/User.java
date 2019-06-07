@@ -34,9 +34,11 @@ public class User implements Serializable {
 
     private String name;
 
+    private String password;
+
     private static final long serialVersionUID = 1L;
 
-    public User(Integer id, Integer revision, Integer createdBy, Date createdTime, Integer updatedBy, Date updatedTime, String openId, String phone, String sessionKey, String token, String avatar, Integer orgId, String status, Long toeknExperie, String name) {
+    public User(Integer id, Integer revision, Integer createdBy, Date createdTime, Integer updatedBy, Date updatedTime, String openId, String phone, String sessionKey, String token, String avatar, Integer orgId, String status, Long toeknExperie, String name, String password) {
         this.id = id;
         this.revision = revision;
         this.createdBy = createdBy;
@@ -52,6 +54,7 @@ public class User implements Serializable {
         this.status = status;
         this.toeknExperie = toeknExperie;
         this.name = name;
+        this.password = password;
     }
 
     public User() {
@@ -178,6 +181,14 @@ public class User implements Serializable {
         this.name = name == null ? null : name.trim();
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password == null ? null : password.trim();
+    }
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -204,7 +215,8 @@ public class User implements Serializable {
             && (this.getOrgId() == null ? other.getOrgId() == null : this.getOrgId().equals(other.getOrgId()))
             && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
             && (this.getToeknExperie() == null ? other.getToeknExperie() == null : this.getToeknExperie().equals(other.getToeknExperie()))
-            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()));
+            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
+            && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()));
     }
 
     @Override
@@ -226,6 +238,7 @@ public class User implements Serializable {
         result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
         result = prime * result + ((getToeknExperie() == null) ? 0 : getToeknExperie().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+        result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
         return result;
     }
 }

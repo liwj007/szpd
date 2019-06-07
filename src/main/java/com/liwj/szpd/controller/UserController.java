@@ -49,7 +49,7 @@ public class UserController {
     @RequestMapping(value = "/isActive", method = RequestMethod.GET)
     public JsonResult isActive(@RequestHeader(value = "token") String token) {
         String newToken = userService.checkActive(token);
-        if (newToken==null)
+        if (newToken == null)
             return JsonResult.renderFail();
         if (newToken.equals("no_user"))
             return JsonResult.renderFail("no_user");
@@ -71,11 +71,22 @@ public class UserController {
     public JsonResult bindPhone(@RequestHeader(value = "token") String token,
                                 @RequestParam(value = "phone") String phone,
                                 @RequestParam(value = "code") String code) {
-        boolean flag = userService.bindPhone(token, phone, code);
-        if (flag) {
-            return JsonResult.renderSuccess();
+        String name = userService.bindPhone(token, phone, code);
+        if (name != null) {
+            return JsonResult.renderSuccess(Constants.SUCCESS, name);
         } else {
             return JsonResult.renderError("绑定手机失败");
+        }
+    }
+
+    @RequestMapping(value = "/check_name", method = RequestMethod.POST)
+    public JsonResult checkName(@RequestHeader(value = "token") String token,
+                                @RequestParam(value = "name") String name) {
+        boolean flag = userService.checkName(token, name);
+        if (flag) {
+            return JsonResult.renderSuccess(Constants.SUCCESS );
+        } else {
+            return JsonResult.renderError("");
         }
     }
 

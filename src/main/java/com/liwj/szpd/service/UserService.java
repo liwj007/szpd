@@ -12,7 +12,7 @@ public interface UserService {
 
     String generateVerifyCode(String token,String phone);
 
-    boolean bindPhone(String token, String phone, String code);
+    String bindPhone(String token, String phone, String code);
 
     boolean checkAddProjectRight(String token);
 
@@ -25,4 +25,6 @@ public interface UserService {
     UserVO getInfo(String token);
 
     String webLogin(String username, String password);
+
+    boolean checkName(String token, String name);
 }

@@ -11,13 +11,16 @@ public class Docker implements Serializable {
 
     private String org;
 
+    private String name;
+
     private static final long serialVersionUID = 1L;
 
-    public Docker(Integer id, String phone, Integer identity, String org) {
+    public Docker(Integer id, String phone, Integer identity, String org, String name) {
         this.id = id;
         this.phone = phone;
         this.identity = identity;
         this.org = org;
+        this.name = name;
     }
 
     public Docker() {
@@ -56,6 +59,14 @@ public class Docker implements Serializable {
         this.org = org == null ? null : org.trim();
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -71,7 +82,8 @@ public class Docker implements Serializable {
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getPhone() == null ? other.getPhone() == null : this.getPhone().equals(other.getPhone()))
             && (this.getIdentity() == null ? other.getIdentity() == null : this.getIdentity().equals(other.getIdentity()))
-            && (this.getOrg() == null ? other.getOrg() == null : this.getOrg().equals(other.getOrg()));
+            && (this.getOrg() == null ? other.getOrg() == null : this.getOrg().equals(other.getOrg()))
+            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()));
     }
 
     @Override
@@ -82,6 +94,7 @@ public class Docker implements Serializable {
         result = prime * result + ((getPhone() == null) ? 0 : getPhone().hashCode());
         result = prime * result + ((getIdentity() == null) ? 0 : getIdentity().hashCode());
         result = prime * result + ((getOrg() == null) ? 0 : getOrg().hashCode());
+        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         return result;
     }
 }

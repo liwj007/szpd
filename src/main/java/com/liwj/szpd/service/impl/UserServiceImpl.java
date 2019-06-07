@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
             user.setName(name);
             userMapper.insert(user);
 
-            String token = TokenProcessor.getInstance().sign(user.getName(),user.getId().toString());
+            String token = TokenProcessor.getInstance().sign(user.getName(), user.getId().toString());
             if (token == null) {
                 return null;
             }
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
             User user = users.get(0);
             Calendar c = Calendar.getInstance();
             if (c.getTimeInMillis() > user.getToeknExperie()) {
-                String token = TokenProcessor.getInstance().sign(user.getName(),user.getId().toString());
+                String token = TokenProcessor.getInstance().sign(user.getName(), user.getId().toString());
                 if (token == null) {
                     return null;
                 }
@@ -104,8 +104,8 @@ public class UserServiceImpl implements UserService {
         if (user.getPhone() == null || user.getPhone().equals(""))
             return null;
         Calendar c = Calendar.getInstance();
-        if (user.getToeknExperie()==null||c.getTimeInMillis() > user.getToeknExperie()) {
-            String t = TokenProcessor.getInstance().sign(user.getName(),user.getId().toString());
+        if (user.getToeknExperie() == null || c.getTimeInMillis() > user.getToeknExperie()) {
+            String t = TokenProcessor.getInstance().sign(user.getName(), user.getId().toString());
             setUserToken(user, t, c);
             userMapper.updateByPrimaryKeySelective(user);
         }
@@ -142,20 +142,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean bindPhone(String token, String phone, String code) {
+    public String bindPhone(String token, String phone, String code) {
         PhoneCode verification = phoneCodeMapper.findByPhone(phone);
 
         if (verification == null)
-            return false;
+            return null;
 
         User user = userMapper.findByToken(token);
         if (user == null) {
-            return false;
+            return null;
         }
 
         if (verification.getStatus() == Constants.VERIFY_CODE_STATE_CLOSE
                 || !verification.getToken().equals(token) || !verification.getCode().equals(code))
-            return false;
+            return null;
 
         verification.setStatus(Constants.VERIFY_CODE_STATE_CLOSE);
         phoneCodeMapper.updateByPrimaryKey(verification);
@@ -169,34 +169,37 @@ public class UserServiceImpl implements UserService {
         dockerExample.createCriteria().andPhoneEqualTo(phone);
         List<Docker> dockers = dockerMapper.selectByExample(dockerExample);
         Docker docker;
-        if (dockers.size()!=Constants.ROLE_CREATOR){
-             docker = dockers.get(0);
-            if (docker.getOrg()!=null){
+        if (dockers.size() != 0) {
+            docker = dockers.get(0);
+            if (docker.getOrg() != null) {
                 OrgExample orgExample = new OrgExample();
                 orgExample.createCriteria().andFullNameEqualTo(docker.getOrg());
                 List<Org> orgs = orgMapper.selectByExample(orgExample);
-                if (orgs.size()!=0){
+                if (orgs.size() != 0) {
                     user.setOrgId(orgs.get(0).getId());
-                    userMapper.updateByPrimaryKeySelective(user);
                 }
             }
-        }else{
-            docker=new Docker();
+            if (docker.getName()!=null&&!"".equals(docker.getName())){
+                user.setName(docker.getName());
+            }
+            userMapper.updateByPrimaryKeySelective(user);
+        } else {
+            docker = new Docker();
             docker.setIdentity(Constants.ROLE_COMMON);
         }
 
         RoleExample roleExample = new RoleExample();
-        if (docker.getIdentity()==Constants.ROLE_CREATOR){
+        if (docker.getIdentity() == Constants.ROLE_CREATOR) {
             roleExample.createCriteria().andTypeEqualTo(RoleEnum.CREATOR.getType());
-        }else if (docker.getIdentity()==Constants.ROLE_COMMON){
+        } else if (docker.getIdentity() == Constants.ROLE_COMMON) {
             roleExample.createCriteria().andTypeEqualTo(RoleEnum.ORDINARY.getType());
-        }else if (docker.getIdentity()==Constants.ROLE_FINANCE){
+        } else if (docker.getIdentity() == Constants.ROLE_FINANCE) {
             roleExample.createCriteria().andTypeEqualTo(RoleEnum.TREASURER.getType());
         }
         List<Role> roleList = roleMapper.selectByExample(roleExample);
-        if (roleList.size()!=0){
+        if (roleList.size() != 0) {
             Role role = roleList.get(0);
-            UserRole  userRole = new UserRole();
+            UserRole userRole = new UserRole();
             userRole.setUserId(user.getId());
             userRole.setRoleId(role.getId());
             userRole.setOrgId(user.getOrgId());
@@ -204,10 +207,19 @@ public class UserServiceImpl implements UserService {
             userRole.setCreatedTime(new Date());
             userRoleMapper.insert(userRole);
         }
-        return true;
+        return user.getName();
     }
 
-
+    @Override
+    public boolean checkName(String token, String name) {
+        User user = userMapper.findByToken(token);
+        if (user == null) {
+            return false;
+        }
+        user.setName(name);
+        userMapper.updateByPrimaryKeySelective(user);
+        return true;
+    }
 
     private void setUserToken(User user, String token, Calendar c) {
         c.add(Calendar.DAY_OF_MONTH, 1);
@@ -253,7 +265,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean checkMangerRole(String token, Integer projectId) {
         User user = userMapper.findByToken(token);
-        if (projectId!=null){
+        if (projectId != null) {
             ProjectManagerExample example = new ProjectManagerExample();
             example.createCriteria().andProjectIdEqualTo(projectId).andUserIdEqualTo(user.getId());
             long c = projectManagerMapper.countByExample(example);
@@ -261,7 +273,7 @@ public class UserServiceImpl implements UserService {
                 return false;
             else
                 return true;
-        }else{
+        } else {
             ProjectManagerExample example = new ProjectManagerExample();
             example.createCriteria().andUserIdEqualTo(user.getId());
             long c = projectManagerMapper.countByExample(example);
@@ -304,9 +316,9 @@ public class UserServiceImpl implements UserService {
         vo.setAvatar(user.getAvatar());
         vo.setPhone(user.getPhone());
 
-        if (user.getOrgId()!=null){
+        if (user.getOrgId() != null) {
             Org org = orgMapper.selectByPrimaryKey(user.getOrgId());
-            if (org!=null){
+            if (org != null) {
                 vo.setDepart(org.getName());
             }
         }
@@ -319,7 +331,7 @@ public class UserServiceImpl implements UserService {
         UserExample example = new UserExample();
         example.createCriteria().andPhoneEqualTo(username);
         List<User> userList = userMapper.selectByExample(example);
-        if (userList.size()==0){
+        if (userList.size() == 0) {
             return null;
         }
         User user = userList.get(0);

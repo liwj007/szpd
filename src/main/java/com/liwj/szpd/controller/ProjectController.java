@@ -46,6 +46,14 @@ public class ProjectController {
         return JsonResult.renderSuccess(res);
     }
 
+    @RequestMapping(value = "/name", method = RequestMethod.GET)
+    public JsonResult getProjectName(@RequestHeader(value = "token") String token,
+                                     @RequestParam(value = "id") Integer projectId) {
+        String res = projectService.getProjectName(token, projectId);
+
+        return JsonResult.renderSuccess(Constants.SUCCESS,res);
+    }
+
     @RequestMapping(value = "/remark", method = RequestMethod.GET)
     public JsonResult getProjectRemark(@RequestHeader(value = "token") String token,
                                      @RequestParam(value = "id") Integer projectId) {
