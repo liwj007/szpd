@@ -25,16 +25,16 @@ public class TestController {
         User user = null;
         switch (type) {
             case 0:
-                user = userMapper.selectByPrimaryKey(2);
+                user = userMapper.selectByPrimaryKey(28);
                 break;
             case 1:
-                user = userMapper.selectByPrimaryKey(3);
+                user = userMapper.selectByPrimaryKey(22);
                 break;
             case 2:
-                user = userMapper.selectByPrimaryKey(4);
+                user = userMapper.selectByPrimaryKey(13);
                 break;
             case 3:
-                user = userMapper.selectByPrimaryKey(5);
+                user = userMapper.selectByPrimaryKey(26);
                 break;
         }
         Calendar c = Calendar.getInstance();

@@ -209,46 +209,45 @@ public class ProjectFeeServiceImpl implements ProjectFeeService {
                     financeStep.setAccountMoney(new BigDecimal(0.0));
                 }
                 vo.setInvoiceNoAccount(vo.getInvoiceNoAccount() + (financeStep.getInvoiceMoney().setScale(2).doubleValue()-financeStep.getAccountMoney().setScale(2).doubleValue()));//开票未到账金额
+            }else{
+                boolean flag = false;
+                double fee = 0.0;
+                switch (step) {
+                    case Constants.PROJECT_START_STEP:
+                        if (schedule.getActualStartUpDate() != null && now.after(schedule.getActualStartUpDate())) {
+                            flag = true;
+                            fee = projectFee.getStartPercent() == null ? 0 : projectFee.getStartPercent().setScale(2).doubleValue();
+                        }
+                        break;
+                    case Constants.PROJECT_MIDDLE_STEP:
+                        if (schedule.getActualMiddleDate() != null && now.after(schedule.getActualMiddleDate())) {
+                            flag = true;
+                            fee = projectFee.getMiddlePercent() == null ? 0 : projectFee.getMiddlePercent().setScale(2).doubleValue();
+                        }
+                        break;
+                    case Constants.PROJECT_PRELIMINARY_STEP:
+                        if (schedule.getActualPreliminaryResult() != null && now.after(schedule.getActualPreliminaryResult())) {
+                            flag = true;
+                            fee = projectFee.getPreliminaryResultPercent() == null ? 0 : projectFee.getPreliminaryResultPercent().setScale(2).doubleValue();
+                        }
+                        break;
+                    case Constants.PROJECT_REVIEW_STEP:
+                        if (schedule.getActualReviewDate() != null && now.after(schedule.getActualReviewDate())) {
+                            flag = true;
+                            fee = projectFee.getReviewPercent() == null ? 0 : projectFee.getReviewPercent().setScale(2).doubleValue();
+                        }
+                        break;
+                    case Constants.PROJECT_FINAL_STEP:
+                        if (schedule.getActualFinalDate() != null && now.after(schedule.getActualFinalDate())) {
+                            flag = true;
+                            fee = projectFee.getFinalPercent() == null ? 0 : projectFee.getFinalPercent().setScale(2).doubleValue();
+                        }
+                        break;
+                }
+                if (flag) {
+                    vo.setStepNoInvoice(vo.getStepNoInvoice() + fee);//基于节点未开票
+                }
             }
-
-            boolean flag = false;
-            double fee = 0.0;
-            switch (step) {
-                case Constants.PROJECT_START_STEP:
-                    if (schedule.getActualStartUpDate() != null && now.after(schedule.getActualStartUpDate())) {
-                        flag = true;
-                        fee = projectFee.getStartPercent() == null ? 0 : projectFee.getStartPercent().setScale(2).doubleValue();
-                    }
-                    break;
-                case Constants.PROJECT_MIDDLE_STEP:
-                    if (schedule.getActualMiddleDate() != null && now.after(schedule.getActualMiddleDate())) {
-                        flag = true;
-                        fee = projectFee.getMiddlePercent() == null ? 0 : projectFee.getMiddlePercent().setScale(2).doubleValue();
-                    }
-                    break;
-                case Constants.PROJECT_PRELIMINARY_STEP:
-                    if (schedule.getActualPreliminaryResult() != null && now.after(schedule.getActualPreliminaryResult())) {
-                        flag = true;
-                        fee = projectFee.getPreliminaryResultPercent() == null ? 0 : projectFee.getPreliminaryResultPercent().setScale(2).doubleValue();
-                    }
-                    break;
-                case Constants.PROJECT_REVIEW_STEP:
-                    if (schedule.getActualReviewDate() != null && now.after(schedule.getActualReviewDate())) {
-                        flag = true;
-                        fee = projectFee.getReviewPercent() == null ? 0 : projectFee.getReviewPercent().setScale(2).doubleValue();
-                    }
-                    break;
-                case Constants.PROJECT_FINAL_STEP:
-                    if (schedule.getActualFinalDate() != null && now.after(schedule.getActualFinalDate())) {
-                        flag = true;
-                        fee = projectFee.getFinalPercent() == null ? 0 : projectFee.getFinalPercent().setScale(2).doubleValue();
-                    }
-                    break;
-            }
-            if (flag) {
-                vo.setStepNoInvoice(vo.getStepNoInvoice() + fee);//基于节点未开票
-            }
-
         }
 
         vo.setDebt(vo.getStepNoInvoice() + vo.getInvoiceNoAccount());//待催款金额

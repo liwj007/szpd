@@ -10,6 +10,24 @@ public class ProjectItemVO {
     private String no;
 
     private Integer status;
+    private Double progress;
+    private Double financeProgress;
+
+    public Double getFinanceProgress() {
+        return financeProgress;
+    }
+
+    public void setFinanceProgress(Double financeProgress) {
+        this.financeProgress = financeProgress;
+    }
+
+    public Double getProgress() {
+        return progress;
+    }
+
+    public void setProgress(Double progress) {
+        this.progress = progress;
+    }
 
     public Integer getStatus() {
         return status;

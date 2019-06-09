@@ -27,4 +27,8 @@ public interface UserService {
     String webLogin(String username, String password);
 
     boolean checkName(String token, String name);
+
+    String generateVerifyCodeForWeb(String mobile);
+
+    boolean updatePassword(String phone, String code, String password);
 }

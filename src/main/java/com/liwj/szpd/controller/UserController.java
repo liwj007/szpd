@@ -67,6 +67,30 @@ public class UserController {
         }
     }
 
+    //web
+    @RequestMapping(value = "/get_sms_captcha", method = RequestMethod.GET)
+    public JsonResult getSmsCaptcha(@RequestParam(value = "mobile") String mobile) {
+        String code = userService.generateVerifyCodeForWeb(mobile);
+        if (code != null) {
+            return JsonResult.renderSuccess(Constants.SUCCESS, code);
+        } else {
+            return JsonResult.renderError("获取验证码失败");
+        }
+    }
+
+    //web
+    @RequestMapping(value = "/update_password", method = RequestMethod.POST)
+    public JsonResult updatePassword(@RequestParam(value = "phone") String phone,
+                                @RequestParam(value = "code") String code,
+                                @RequestParam(value = "password") String password) {
+        boolean flag = userService.updatePassword(phone, code,password);
+        if (flag) {
+            return JsonResult.renderSuccess(Constants.SUCCESS);
+        } else {
+            return JsonResult.renderError("绑定手机失败");
+        }
+    }
+
     @RequestMapping(value = "/bind_phone", method = RequestMethod.POST)
     public JsonResult bindPhone(@RequestHeader(value = "token") String token,
                                 @RequestParam(value = "phone") String phone,

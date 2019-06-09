@@ -28,4 +28,10 @@ public class Constants {
     public static final int FILE_CHECK = 0 ;
     public static final int FILE_MEETING_PHOTO = 1 ;
     public static final int FILE_MEETING_SUMMARY = 2 ;
+
+    public final static String PROJECT_START_STEP_NAME = "项目启动";
+    public final static String PROJECT_MIDDLE_STEP_NAME = "项目期中";
+    public final static String PROJECT_PRELIMINARY_STEP_NAME = "初步成果";
+    public final static String PROJECT_REVIEW_STEP_NAME = "验收评审";
+    public final static String PROJECT_FINAL_STEP_NAME = "最终成果";
 }

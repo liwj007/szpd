@@ -9,6 +9,8 @@ import com.liwj.szpd.utils.PermitEnum;
 import com.liwj.szpd.utils.RoleEnum;
 import com.liwj.szpd.utils.TokenProcessor;
 import com.liwj.szpd.vo.UserVO;
+import com.sun.tools.corba.se.idl.constExpr.Or;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -141,6 +143,79 @@ public class UserServiceImpl implements UserService {
         return phoneCode.getCode();
     }
 
+    @Autowired
+    private PhoneCodeWebMapper phoneCodeWebMapper;
+
+    @Override
+    public String generateVerifyCodeForWeb(String mobile) {
+        boolean flag = false;
+
+        PhoneCodeWeb code;
+        PhoneCodeWebExample example = new PhoneCodeWebExample();
+        example.createCriteria().andPhoneEqualTo(mobile);
+        List<PhoneCodeWeb> codes = phoneCodeWebMapper.selectByExample(example);
+        if (codes.size() == 0) {
+            code = new PhoneCodeWeb();
+            flag = true;
+        } else {
+            code = codes.get(0);
+        }
+        String verifyCode = String
+                .valueOf(new Random().nextInt(899999) + 100000);
+        code.setCode(verifyCode);
+        code.setPhone(mobile);
+        code.setStatus(Constants.VERIFY_CODE_STATE_OPEN);
+
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.MINUTE, 5);
+        code.setExpire(c.getTimeInMillis());
+
+        if (flag)
+            phoneCodeWebMapper.insert(code);
+        else
+            phoneCodeWebMapper.updateByPrimaryKey(code);
+
+        AliyunSMS.sendVerificationCode(mobile, code.getCode());
+
+        return code.getCode();
+    }
+
+    @Override
+    public boolean updatePassword(String phone, String code, String password) {
+        PhoneCodeWebExample example = new PhoneCodeWebExample();
+        example.createCriteria().andPhoneEqualTo(phone);
+        List<PhoneCodeWeb> codes = phoneCodeWebMapper.selectByExample(example);
+        if (codes.size() == 0)
+            return false;
+        PhoneCodeWeb verification = codes.get(0);
+
+        if (verification == null)
+            return false;
+
+        if (verification.getStatus() == Constants.VERIFY_CODE_STATE_CLOSE
+                || !verification.getCode().equals(code))
+            return false;
+
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andPhoneEqualTo(phone);
+        List<User> userList = userMapper.selectByExample(userExample);
+        if (userList.size() == 0) {
+            return false;
+        }
+        User user = userList.get(0);
+        if (user.getPassword() != null) {
+            if (!user.getPassword().equals(""))
+                return false;
+        }
+
+        verification.setStatus(Constants.VERIFY_CODE_STATE_CLOSE);
+        phoneCodeWebMapper.updateByPrimaryKey(verification);
+
+        user.setPassword(DigestUtils.md5Hex(password));
+        userMapper.updateByPrimaryKeySelective(user);
+        return true;
+    }
+
     @Override
     public String bindPhone(String token, String phone, String code) {
         PhoneCode verification = phoneCodeMapper.findByPhone(phone);
@@ -173,15 +248,16 @@ public class UserServiceImpl implements UserService {
             docker = dockers.get(0);
             if (docker.getOrg() != null) {
                 OrgExample orgExample = new OrgExample();
-                orgExample.createCriteria().andFullNameEqualTo(docker.getOrg());
-                List<Org> orgs = orgMapper.selectByExample(orgExample);
-                if (orgs.size() != 0) {
-                    user.setOrgId(orgs.get(0).getId());
+                orgExample.createCriteria().andShortNameEqualTo(docker.getOrg());
+                List<Org> orgList = orgMapper.selectByExample(orgExample);
+                if (orgList.size() != 0) {
+                    user.setOrgId(orgList.get(0).getId());
                 }
             }
-            if (docker.getName()!=null&&!"".equals(docker.getName())){
+            if (docker.getName() != null && !"".equals(docker.getName())) {
                 user.setName(docker.getName());
             }
+
             userMapper.updateByPrimaryKeySelective(user);
         } else {
             docker = new Docker();
@@ -329,7 +405,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String webLogin(String username, String password) {
         UserExample example = new UserExample();
-        example.createCriteria().andPhoneEqualTo(username);
+        example.createCriteria().andPhoneEqualTo(username).andPasswordEqualTo(DigestUtils.md5Hex(password));
         List<User> userList = userMapper.selectByExample(example);
         if (userList.size() == 0) {
             return null;

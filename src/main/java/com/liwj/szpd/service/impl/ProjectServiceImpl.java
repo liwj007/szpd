@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.liwj.szpd.form.ProjectBaseForm;
 import com.liwj.szpd.mapper.*;
 import com.liwj.szpd.model.*;
+import com.liwj.szpd.service.ProjectFeeService;
+import com.liwj.szpd.service.ProjectScheduleService;
 import com.liwj.szpd.service.ProjectService;
 import com.liwj.szpd.utils.ChinesePinyinUtil;
 import com.liwj.szpd.utils.Constants;
@@ -60,6 +62,12 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private ProjectFinanceStepMapper projectFinanceStepMapper;
 
+    @Autowired
+    private ProjectScheduleService scheduleService;
+
+    @Autowired
+    private ProjectFeeService projectFeeService;
+
     @Override
     @Transactional
     public boolean create(String token, ProjectBaseForm form) {
@@ -106,15 +114,13 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public String getProjectName(String token, Integer projectId) {
         Project project = projectMapper.selectByPrimaryKey(projectId);
-        if (project==null){
+        if (project == null) {
             return null;
         }
         return project.getName();
     }
 
     private void generateProjectTreasureMapper(Project project, User creator) {
-
-
         RoleExample roleExample = new RoleExample();
         roleExample.createCriteria().andTypeEqualTo(RoleEnum.TREASURER.getType());
         List<Role> roles = roleMapper.selectByExample(roleExample);
@@ -157,7 +163,6 @@ public class ProjectServiceImpl implements ProjectService {
             criteria.andNameLikeInsensitive("%" + content + "%");
         List<Project> projects = projectMapper.selectByExample(projectExample);
 
-
         List<ProjectItemVO> res = new ArrayList<>();
         if (projects.size() == 0)
             return new PageResult<>(page, size, 0, res);
@@ -194,6 +199,9 @@ public class ProjectServiceImpl implements ProjectService {
                     vo.setInitStatus(project.getStatus() != Constants.PROJECT_NEW);
                 }
             }
+
+            vo.setProgress(scheduleService.getProjectProgress(project.getId()) * 100);
+            vo.setFinanceProgress(projectFeeService.statisticFinanceInfo(project.getId()).getAccount() * 100 / project.getTotalFee().doubleValue());
 
             res.add(vo);
         }
@@ -309,15 +317,15 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private void updateFee(Project project, ProjectBaseForm form, User user, boolean isNew) {
-        if (form.getStartPercent() != null && "".equals(form.getStartPercent()))
+        if (form.getStartPercent() != null && ("".equals(form.getStartPercent()) || Double.parseDouble(form.getStartPercent()) == 0.0))
             form.setStartPercent(null);
-        if (form.getMiddlePercent() != null && "".equals(form.getMiddlePercent()))
+        if (form.getMiddlePercent() != null && ("".equals(form.getMiddlePercent()) || Double.parseDouble(form.getMiddlePercent()) == 0.0))
             form.setMiddlePercent(null);
-        if (form.getPreliminaryPercent() != null && "".equals(form.getPreliminaryPercent()))
+        if (form.getPreliminaryPercent() != null && ("".equals(form.getPreliminaryPercent()) || Double.parseDouble(form.getPreliminaryPercent()) == 0.0))
             form.setPreliminaryPercent(null);
-        if (form.getReviewPercent() != null && "".equals(form.getReviewPercent()))
+        if (form.getReviewPercent() != null && ("".equals(form.getReviewPercent()) || Double.parseDouble(form.getReviewPercent()) == 0.0))
             form.setReviewPercent(null);
-        if (form.getFinalPercent() != null && "".equals(form.getFinalPercent()))
+        if (form.getFinalPercent() != null && ("".equals(form.getFinalPercent()) || Double.parseDouble(form.getFinalPercent()) == 0.0))
             form.setFinalPercent(null);
 
 
@@ -463,7 +471,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public MembersVO getAllMembers(String token,Integer projectID) {
+    public MembersVO getAllMembers(String token, Integer projectID) {
         MembersVO vo = new MembersVO();
         vo.setManagers(new ArrayList<>());
         vo.setLeaders(new ArrayList<>());
@@ -477,15 +485,15 @@ public class ProjectServiceImpl implements ProjectService {
         ProjectManagerExample managerExample = new ProjectManagerExample();
         managerExample.createCriteria().andProjectIdEqualTo(projectID);
         List<ProjectManager> projectManagerList = projectManagerMapper.selectByExample(managerExample);
-        for (ProjectManager manager: projectManagerList){
+        for (ProjectManager manager : projectManagerList) {
             UserVO u = new UserVO();
-            User user =userMapper.selectByPrimaryKey(manager.getUserId());
+            User user = userMapper.selectByPrimaryKey(manager.getUserId());
             u.setName(user.getName());
             u.setPhone(user.getPhone());
             u.setAvatar(user.getAvatar());
             vo.getManagers().add(u);
 
-            if (user.getId()==my.getId()){
+            if (user.getId() == my.getId()) {
                 vo.setCanEditLeader(true);
                 vo.setCanEditManager(true);
             }
@@ -494,15 +502,15 @@ public class ProjectServiceImpl implements ProjectService {
         ProjectLeaderExample leaderExample = new ProjectLeaderExample();
         leaderExample.createCriteria().andProjectIdEqualTo(projectID);
         List<ProjectLeader> projectLeaderList = projectLeaderMapper.selectByExample(leaderExample);
-        for (ProjectLeader leader: projectLeaderList){
+        for (ProjectLeader leader : projectLeaderList) {
             UserVO u = new UserVO();
-            User user =userMapper.selectByPrimaryKey(leader.getUserId());
+            User user = userMapper.selectByPrimaryKey(leader.getUserId());
             u.setName(user.getName());
             u.setPhone(user.getPhone());
             u.setAvatar(user.getAvatar());
             vo.getLeaders().add(u);
 
-            if (user.getId()==my.getId()){
+            if (user.getId() == my.getId()) {
                 vo.setCanEditMember(true);
             }
         }
@@ -510,9 +518,9 @@ public class ProjectServiceImpl implements ProjectService {
         ProjectMemberExample memberExample = new ProjectMemberExample();
         memberExample.createCriteria().andProjectIdEqualTo(projectID);
         List<ProjectMember> projectMemberList = projectMemberMapper.selectByExample(memberExample);
-        for (ProjectMember member: projectMemberList){
+        for (ProjectMember member : projectMemberList) {
             UserVO u = new UserVO();
-            User user =userMapper.selectByPrimaryKey(member.getUserId());
+            User user = userMapper.selectByPrimaryKey(member.getUserId());
             u.setName(user.getName());
             u.setPhone(user.getPhone());
             u.setAvatar(user.getAvatar());

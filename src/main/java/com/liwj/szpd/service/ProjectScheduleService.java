@@ -14,8 +14,9 @@ public interface ProjectScheduleService {
 
     boolean updateActualDate(String token, Integer id, String date, String type);
 
-
     ProjectScheduleVO getScheduleInfo(String token, Integer projectId);
+
+    double getProjectProgress(Integer projectId);
 
     ScheduleItemVO getScheduleStepInfo(String token, Integer scheduleId, Integer step);
 
