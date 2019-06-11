@@ -147,11 +147,11 @@ public class ProjectServiceImpl implements ProjectService {
     public PageResult<ProjectItemVO> getMyProjects(String token, String content, Integer page, Integer size) {
         User user = userMapper.findByToken(token);
         if (user == null)
-            return null;
+            return new PageResult<>(page, size, 0, new ArrayList<>());
         List<Integer> projectIds = getUserProjectIds(user);
 
         if (projectIds.size() == 0)
-            return null;
+            return new PageResult<>(page, size, 0, new ArrayList<>());
 
         PageHelper.startPage(page, size);
 
@@ -201,7 +201,7 @@ public class ProjectServiceImpl implements ProjectService {
             }
 
             vo.setProgress(scheduleService.getProjectProgress(project.getId()) * 100);
-            vo.setFinanceProgress(projectFeeService.statisticFinanceInfo(project.getId()).getAccount() * 100 / project.getTotalFee().doubleValue());
+            vo.setFinanceProgress(project.getTotalFee() == null||project.getTotalFee().doubleValue()==0.0 ? 0 : projectFeeService.statisticFinanceInfo(project.getId()).getAccount() * 100 / project.getTotalFee().doubleValue());
 
             res.add(vo);
         }

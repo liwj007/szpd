@@ -9,7 +9,6 @@ import com.liwj.szpd.utils.PermitEnum;
 import com.liwj.szpd.utils.RoleEnum;
 import com.liwj.szpd.utils.TokenProcessor;
 import com.liwj.szpd.vo.UserVO;
-import com.sun.tools.corba.se.idl.constExpr.Or;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

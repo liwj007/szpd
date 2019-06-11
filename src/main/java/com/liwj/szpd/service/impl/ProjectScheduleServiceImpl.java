@@ -11,6 +11,8 @@ import com.liwj.szpd.vo.ScheduleItemVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -165,8 +167,9 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
                 finish++;
             }
         }
+        BigDecimal bd = total == 0.0 ? new BigDecimal(0.0) : new BigDecimal((double) finish / total);
 
-        return (double) finish / total;
+        return bd.setScale(4, RoundingMode.HALF_UP).doubleValue();
     }
 
     @Override
