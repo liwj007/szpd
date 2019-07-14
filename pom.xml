@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.liwj</groupId>
     <artifactId>szpd</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.9</version>
     <name>szpd</name>
     <description>project manager</description>
     <packaging>war</packaging>

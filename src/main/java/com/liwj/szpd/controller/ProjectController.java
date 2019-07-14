@@ -31,9 +31,10 @@ public class ProjectController {
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public JsonResult getMyProjects(@RequestHeader(value = "token") String token,
                                     @RequestParam(value = "content") String content,
+                                    @RequestParam(value = "filter", required = false) Integer status,
                                     @RequestParam(value = "pageNo") Integer page,
                                     @RequestParam(value = "pageSize") Integer size) {
-        PageResult<ProjectItemVO> res = projectService.getMyProjects(token, content, page, size);
+        PageResult<ProjectItemVO> res = projectService.getMyProjects(token, content,status, page, size);
 
         return JsonResult.renderSuccess(res);
     }
@@ -77,6 +78,17 @@ public class ProjectController {
     public JsonResult closeProject(@RequestHeader(value = "token") String token,
                                    @RequestParam(value = "id") Integer id) {
         boolean flag = projectService.close(token, id);
+        if (flag) {
+            return JsonResult.renderSuccess();
+        } else {
+            return JsonResult.renderFail("更新项目失败");
+        }
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public JsonResult deleteProject(@RequestHeader(value = "token") String token,
+                                   @RequestParam(value = "id") Integer id) {
+        boolean flag = projectService.delete(token, id);
         if (flag) {
             return JsonResult.renderSuccess();
         } else {

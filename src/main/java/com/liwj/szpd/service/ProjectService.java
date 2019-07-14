@@ -12,7 +12,7 @@ import java.util.List;
 public interface ProjectService {
     boolean create(String token, ProjectBaseForm form);
 
-    PageResult<ProjectItemVO> getMyProjects(String token, String content,Integer page, Integer size);
+    PageResult<ProjectItemVO> getMyProjects(String token, String content, Integer status, Integer page, Integer size);
 
     ProjectBaseForm getProjectInfo(String token, Integer projectId);
 
@@ -24,9 +24,11 @@ public interface ProjectService {
 
     String getProjectRemark(String token, Integer projectId);
 
-    MembersVO getAllMembers(String token,Integer projectID);
+    MembersVO getAllMembers(String token, Integer projectID);
 
     List<UserItemVO> searchUsersForProject(Integer projectID, String content);
 
     String getProjectName(String token, Integer projectId);
+
+    boolean delete(String token, Integer id);
 }

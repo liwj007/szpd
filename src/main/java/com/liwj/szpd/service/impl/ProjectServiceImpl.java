@@ -144,7 +144,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public PageResult<ProjectItemVO> getMyProjects(String token, String content, Integer page, Integer size) {
+    public PageResult<ProjectItemVO> getMyProjects(String token, String content, Integer status,Integer page, Integer size) {
         User user = userMapper.findByToken(token);
         if (user == null)
             return new PageResult<>(page, size, 0, new ArrayList<>());
@@ -159,6 +159,30 @@ public class ProjectServiceImpl implements ProjectService {
         projectExample.setOrderByClause("created_time desc");
         ProjectExample.Criteria criteria = projectExample.createCriteria();
         criteria.andIdIn(projectIds);
+        List<Integer> statusList = new ArrayList<>();
+        switch (status){
+            case 0:
+                statusList.add(Constants.PROJECT_NEW);
+                statusList.add(Constants.PROJECT_DOING);
+                break;
+            case 1:
+                statusList.add(Constants.PROJECT_NEW);
+                break;
+            case 2:
+                statusList.add(Constants.PROJECT_DOING);
+                break;
+            case 3:
+                statusList.add(Constants.PROJECT_CLOSE);
+                break;
+            case 4:
+                statusList.add(Constants.PROJECT_NEW);
+                statusList.add(Constants.PROJECT_DOING);
+                statusList.add(Constants.PROJECT_CLOSE);
+                break;
+        }
+
+
+        criteria.andStatusIn(statusList);
         if (content != null && !"".equals(content))
             criteria.andNameLikeInsensitive("%" + content + "%");
         List<Project> projects = projectMapper.selectByExample(projectExample);
@@ -176,7 +200,11 @@ public class ProjectServiceImpl implements ProjectService {
             vo.setId(project.getId());
             vo.setDate(sdf.format(project.getUpdatedTime()));
             vo.setName(project.getName());
-            vo.setIconName(ChinesePinyinUtil.getPinYinFirstHeadChar(project.getName()));
+//            vo.setIconName(ChinesePinyinUtil.getPinYinFirstHeadChar(project.getName()));
+
+            String code = project.getProjectNumber();
+            String[] tmp = code.split("-");
+            vo.setIconName(tmp.length<4?"无":tmp[3]);
             vo.setInitStatus(true);
             vo.setNo(project.getProjectNumber());
             vo.setStatus(project.getStatus());
@@ -466,6 +494,14 @@ public class ProjectServiceImpl implements ProjectService {
     public boolean close(String token, Integer id) {
         Project project = projectMapper.selectByPrimaryKey(id);
         project.setStatus(Constants.PROJECT_CLOSE);
+        projectMapper.updateByPrimaryKeySelective(project);
+        return true;
+    }
+
+    @Override
+    public boolean delete(String token, Integer id) {
+        Project project = projectMapper.selectByPrimaryKey(id);
+        project.setStatus(Constants.PROJECT_DELETE);
         projectMapper.updateByPrimaryKeySelective(project);
         return true;
     }

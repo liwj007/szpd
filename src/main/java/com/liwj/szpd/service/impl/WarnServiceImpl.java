@@ -7,6 +7,7 @@ import com.liwj.szpd.mapper.UserMapper;
 import com.liwj.szpd.model.*;
 import com.liwj.szpd.service.ProjectFeeService;
 import com.liwj.szpd.service.WarnService;
+import com.liwj.szpd.utils.Constants;
 import com.liwj.szpd.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,7 +57,10 @@ public class WarnServiceImpl implements WarnService {
         List<ProjectManager> projectManagers = projectManagerMapper.selectByExample(managerExample);
         HashSet<Integer> projectIds = new HashSet<>();
         for (ProjectManager manager : projectManagers) {
-            projectIds.add(manager.getProjectId());
+            Project project = projectMapper.selectByPrimaryKey(manager.getProjectId());
+            if (project.getStatus()== Constants.PROJECT_NEW || project.getStatus()==Constants.PROJECT_DOING){
+                projectIds.add(manager.getProjectId());
+            }
         }
         return projectIds;
     }

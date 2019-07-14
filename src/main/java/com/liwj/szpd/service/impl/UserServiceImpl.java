@@ -274,13 +274,19 @@ public class UserServiceImpl implements UserService {
         List<Role> roleList = roleMapper.selectByExample(roleExample);
         if (roleList.size() != 0) {
             Role role = roleList.get(0);
-            UserRole userRole = new UserRole();
-            userRole.setUserId(user.getId());
-            userRole.setRoleId(role.getId());
-            userRole.setOrgId(user.getOrgId());
-            userRole.setRevision(0);
-            userRole.setCreatedTime(new Date());
-            userRoleMapper.insert(userRole);
+
+            UserRoleExample userRoleExample = new UserRoleExample();
+            userRoleExample.createCriteria().andUserIdEqualTo(user.getId()).andRoleIdEqualTo(role.getId());
+            long c = userRoleMapper.countByExample(userRoleExample);
+            if (c==0){
+                UserRole userRole =  new UserRole();
+                userRole.setUserId(user.getId());
+                userRole.setRoleId(role.getId());
+                userRole.setOrgId(user.getOrgId());
+                userRole.setRevision(0);
+                userRole.setCreatedTime(new Date());
+                userRoleMapper.insert(userRole);
+            }
         }
         return user.getName();
     }

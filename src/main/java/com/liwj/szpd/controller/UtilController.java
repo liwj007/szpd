@@ -831,7 +831,9 @@ public class UtilController {
         managerExample.createCriteria().andUserIdEqualTo(user.getId());
         List<ProjectManager> projectManagers = projectManagerMapper.selectByExample(managerExample);
         for (ProjectManager manager : projectManagers) {
-            projectIds.add(manager.getProjectId());
+            Project project = projectMapper.selectByPrimaryKey(manager.getProjectId());
+            if (project.getStatus() != Constants.PROJECT_DELETE)
+                projectIds.add(manager.getProjectId());
         }
 
         ProjectExample projectExample = new ProjectExample();
