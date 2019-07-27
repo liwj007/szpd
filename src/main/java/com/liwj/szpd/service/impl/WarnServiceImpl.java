@@ -165,49 +165,49 @@ public class WarnServiceImpl implements WarnService {
             ProjectSchedule schedule = projectSchedules.get(0);
 
             if (schedule.getPlanStartUpDate() != null && schedule.getPlanStartUpDate().before(now) && schedule.getActualStartUpDate() == null) {
-                vo.getOutDateSteps().add("项目启动");
+                vo.getOutDateSteps().add("合同签订");
                 flag=true;
             }
             if (schedule.getPlanMiddleDate() != null && schedule.getPlanMiddleDate().before(now) && schedule.getActualMiddleDate() == null) {
-                vo.getOutDateSteps().add("项目中期");
+                vo.getOutDateSteps().add("中间成果");
                 flag=true;
             }
             if (schedule.getPlanPreliminaryResult() != null && schedule.getPlanPreliminaryResult().before(now) && schedule.getActualPreliminaryResult() == null) {
-                vo.getOutDateSteps().add("初步成果");
+                vo.getOutDateSteps().add("论证评审");
                 flag=true;
             }
             if (schedule.getPlanReviewDate() != null && schedule.getPlanReviewDate().before(now) && schedule.getActualReviewDate() == null) {
-                vo.getOutDateSteps().add("评审验收");
+                vo.getOutDateSteps().add("最终成果");
                 flag=true;
             }
             if (schedule.getPlanFinalDate() != null && schedule.getPlanFinalDate().before(now) && schedule.getActualFinalDate() == null) {
-                vo.getOutDateSteps().add("最终成果");
+                vo.getOutDateSteps().add("报批通过");
                 flag=true;
             }
 
             if (schedule.getPlanStartUpDate() != null && schedule.getActualStartUpDate() == null
                     && schedule.getPlanStartUpDate().after(now) && schedule.getPlanStartUpDate().before(next)) {
-                vo.getMonthSteps().add("项目启动");
+                vo.getMonthSteps().add("合同签订");
                 flag=true;
             }
             if (schedule.getPlanMiddleDate() != null && schedule.getActualMiddleDate() == null
                     && schedule.getPlanMiddleDate().after(now) && schedule.getPlanMiddleDate().before(next)) {
-                vo.getMonthSteps().add("项目中期");
+                vo.getMonthSteps().add("中间成果");
                 flag=true;
             }
             if (schedule.getPlanPreliminaryResult() != null && schedule.getActualPreliminaryResult() == null
                     && schedule.getPlanPreliminaryResult().after(now) && schedule.getPlanPreliminaryResult().before(next)) {
-                vo.getMonthSteps().add("初步成果");
+                vo.getMonthSteps().add("论证评审");
                 flag=true;
             }
             if (schedule.getPlanReviewDate() != null && schedule.getActualReviewDate() == null
                     && schedule.getPlanReviewDate().after(now) && schedule.getPlanReviewDate().before(next)) {
-                vo.getMonthSteps().add("评审验收");
+                vo.getMonthSteps().add("最终成果");
                 flag=true;
             }
             if (schedule.getPlanFinalDate() != null && schedule.getActualFinalDate() == null
                     && schedule.getPlanFinalDate().after(now) && schedule.getPlanFinalDate().before(next)) {
-                vo.getMonthSteps().add("最终成果");
+                vo.getMonthSteps().add("报批通过");
                 flag=true;
             }
             if (flag){

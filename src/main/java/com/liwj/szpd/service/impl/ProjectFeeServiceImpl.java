@@ -55,19 +55,19 @@ public class ProjectFeeServiceImpl implements ProjectFeeService {
             switch (step.getStep()) {
                 case Constants
                         .PROJECT_START_STEP:
-                    stepVO.setStepName("项目启动");
+                    stepVO.setStepName("合同签订");
                     break;
                 case Constants.PROJECT_MIDDLE_STEP:
-                    stepVO.setStepName("项目中期");
+                    stepVO.setStepName("中间成果");
                     break;
                 case Constants.PROJECT_PRELIMINARY_STEP:
-                    stepVO.setStepName("初步成果");
+                    stepVO.setStepName("论证评审");
                     break;
                 case Constants.PROJECT_REVIEW_STEP:
-                    stepVO.setStepName("评审验收");
+                    stepVO.setStepName("最终成果");
                     break;
                 case Constants.PROJECT_FINAL_STEP:
-                    stepVO.setStepName("最终成果");
+                    stepVO.setStepName("报批通过");
                     break;
             }
             stepVO.setInvoiceMoney(step.getInvoiceMoney() == null ? null : step.getInvoiceMoney().setScale(2).doubleValue());

@@ -107,6 +107,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectManagerMapper.insert(manager);
 
         generateProjectTreasureMapper(project, user);
+        autoConnectOtherCreator(project, user);
 
         return true;
     }
@@ -118,6 +119,29 @@ public class ProjectServiceImpl implements ProjectService {
             return null;
         }
         return project.getName();
+    }
+
+    private void autoConnectOtherCreator(Project project, User creator) {
+        RoleExample roleExample = new RoleExample();
+        roleExample.createCriteria().andTypeEqualTo(RoleEnum.CREATOR.getType());
+        List<Role> roles = roleMapper.selectByExample(roleExample);
+        if (roles.size() == 0)
+            return;
+        Role creatorRole = roles.get(0);
+        UserRoleExample userRoleExample = new UserRoleExample();
+        userRoleExample.createCriteria().andOrgIdEqualTo(creator.getOrgId()).andRoleIdEqualTo(creatorRole.getId()).andUserIdNotEqualTo(creator.getId());
+        List<UserRole> userRoles = userRoleMapper.selectByExample(userRoleExample);
+        if (userRoles.size() == 0)
+            return;
+        for (UserRole userRole : userRoles) {
+            ProjectManager manager = new ProjectManager();
+            manager.setProjectId(project.getId());
+            manager.setCreatedBy(creator.getId());
+            manager.setCreatedTime(new Date());
+            manager.setUserId(userRole.getUserId());
+            manager.setRevision(0);
+            projectManagerMapper.insert(manager);
+        }
     }
 
     private void generateProjectTreasureMapper(Project project, User creator) {
@@ -144,7 +168,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public PageResult<ProjectItemVO> getMyProjects(String token, String content, Integer status,Integer page, Integer size) {
+    public PageResult<ProjectItemVO> getMyProjects(String token, String content, Integer status, Integer page, Integer size) {
         User user = userMapper.findByToken(token);
         if (user == null)
             return new PageResult<>(page, size, 0, new ArrayList<>());
@@ -160,7 +184,7 @@ public class ProjectServiceImpl implements ProjectService {
         ProjectExample.Criteria criteria = projectExample.createCriteria();
         criteria.andIdIn(projectIds);
         List<Integer> statusList = new ArrayList<>();
-        switch (status){
+        switch (status) {
             case 0:
                 statusList.add(Constants.PROJECT_NEW);
                 statusList.add(Constants.PROJECT_DOING);
@@ -204,7 +228,7 @@ public class ProjectServiceImpl implements ProjectService {
 
             String code = project.getProjectNumber();
             String[] tmp = code.split("-");
-            vo.setIconName(tmp.length<4?"无":tmp[3]);
+            vo.setIconName(tmp.length < 4 ? "无" : tmp[3]);
             vo.setInitStatus(true);
             vo.setNo(project.getProjectNumber());
             vo.setStatus(project.getStatus());
@@ -229,7 +253,7 @@ public class ProjectServiceImpl implements ProjectService {
             }
 
             vo.setProgress(scheduleService.getProjectProgress(project.getId()) * 100);
-            vo.setFinanceProgress(project.getTotalFee() == null||project.getTotalFee().doubleValue()==0.0 ? 0 : projectFeeService.statisticFinanceInfo(project.getId()).getAccount() * 100 / project.getTotalFee().doubleValue());
+            vo.setFinanceProgress(project.getTotalFee() == null || project.getTotalFee().doubleValue() == 0.0 ? 0 : projectFeeService.statisticFinanceInfo(project.getId()).getAccount() * 100 / project.getTotalFee().doubleValue());
 
             res.add(vo);
         }
@@ -633,5 +657,26 @@ public class ProjectServiceImpl implements ProjectService {
 
         List<User> userList = userMapper.selectByExample(userExample);
         return userList;
+    }
+
+    @Override
+    public void exportProjectToWang() {
+        ProjectManagerExample example = new ProjectManagerExample();
+        example.createCriteria().andUserIdEqualTo(14);
+        List<ProjectManager> projectManagers = projectManagerMapper.selectByExample(example);
+        for (ProjectManager manager : projectManagers) {
+            ProjectManagerExample example2 = new ProjectManagerExample();
+            example2.createCriteria().andUserIdEqualTo(22).andProjectIdEqualTo(manager.getProjectId());
+            long c = projectManagerMapper.countByExample(example2);
+            if (c == 0) {
+                ProjectManager projectManager = new ProjectManager();
+                projectManager.setProjectId(manager.getProjectId());
+                projectManager.setCreatedBy(manager.getCreatedBy());
+                projectManager.setCreatedTime(manager.getCreatedTime());
+                projectManager.setUserId(22);
+                projectManager.setRevision(0);
+                projectManagerMapper.insert(projectManager);
+            }
+        }
     }
 }

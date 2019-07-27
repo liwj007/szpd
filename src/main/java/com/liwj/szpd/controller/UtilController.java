@@ -96,11 +96,11 @@ public class UtilController {
         if (type == 0 || type == 1) {
             titles.add("合同编号");
             titles.add("项目甲方");
-            titles.add("合同约定-项目启动");
-            titles.add("合同约定-项目中期");
-            titles.add("合同约定-初步成果");
-            titles.add("合同约定-评审验收");
+            titles.add("合同约定-合同签订");
+            titles.add("合同约定-中间成果");
+            titles.add("合同约定-论证评审");
             titles.add("合同约定-最终成果");
+            titles.add("合同约定-报批通过");
         }
 
         if (type == 0 || type == 2) {
@@ -108,16 +108,16 @@ public class UtilController {
             titles.add("项目成员");
 
             titles.add("项目开工时间");
-            titles.add("项目计划-项目启动");
-            titles.add("项目计划-项目中期");
-            titles.add("项目计划-初步成果");
-            titles.add("项目计划-评审验收");
+            titles.add("项目计划-合同签订");
+            titles.add("项目计划-中间成果");
+            titles.add("项目计划-论证评审");
             titles.add("项目计划-最终成果");
-            titles.add("项目进度-项目启动");
-            titles.add("项目进度-项目中期");
-            titles.add("项目进度-初步成果");
-            titles.add("项目进度-评审验收");
+            titles.add("项目计划-报批通过");
+            titles.add("项目进度-合同签订");
+            titles.add("项目进度-中间成果");
+            titles.add("项目进度-论证评审");
             titles.add("项目进度-最终成果");
+            titles.add("项目进度-报批通过");
         }
 
         if (type == 0 || type == 3) {

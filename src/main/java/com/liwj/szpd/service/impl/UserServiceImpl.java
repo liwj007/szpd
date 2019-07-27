@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
             user.setSessionKey(session_key);
             user.setUpdatedTime(new Date());
             user.setAvatar(avatar);
-            user.setName(name);
+//            user.setName(name);
 
             userMapper.updateByPrimaryKeySelective(user);
             return user.getToken();

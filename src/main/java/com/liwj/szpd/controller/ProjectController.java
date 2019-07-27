@@ -103,4 +103,11 @@ public class ProjectController {
         MembersVO res = projectService.getAllMembers(token,projectID);
         return responseData.setSuccessData(res);
     }
+
+    @RequestMapping(value = "/export_project_to_wang", method = RequestMethod.GET)
+    public ResponseData exportProjectToWang() {
+        ResponseData responseData = new ResponseData();
+        projectService.exportProjectToWang();
+        return responseData.setSuccessData(null);
+    }
 }

@@ -31,4 +31,6 @@ public interface ProjectService {
     String getProjectName(String token, Integer projectId);
 
     boolean delete(String token, Integer id);
+
+    void exportProjectToWang();
 }

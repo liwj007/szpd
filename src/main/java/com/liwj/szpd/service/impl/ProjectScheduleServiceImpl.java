@@ -63,7 +63,7 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
         scheduleItem.setcFiles(boxFile(projectId, Constants.PROJECT_START_STEP, Constants.FILE_CHECK));
         scheduleItem.setpFiles(boxFile(projectId, Constants.PROJECT_START_STEP, Constants.FILE_MEETING_PHOTO));
         scheduleItem.setmFiles(boxFile(projectId, Constants.PROJECT_START_STEP, Constants.FILE_MEETING_SUMMARY));
-        scheduleItem.setStepName("项目启动");
+        scheduleItem.setStepName("合同签订");
         scheduleItemVOS.add(scheduleItem);
 
         //项目中期
@@ -74,7 +74,7 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
         scheduleItem.setcFiles(boxFile(projectId, Constants.PROJECT_MIDDLE_STEP, Constants.FILE_CHECK));
         scheduleItem.setpFiles(boxFile(projectId, Constants.PROJECT_MIDDLE_STEP, Constants.FILE_MEETING_PHOTO));
         scheduleItem.setmFiles(boxFile(projectId, Constants.PROJECT_MIDDLE_STEP, Constants.FILE_MEETING_SUMMARY));
-        scheduleItem.setStepName("项目中期");
+        scheduleItem.setStepName("中间成果");
         scheduleItemVOS.add(scheduleItem);
 
         //项目初步成果
@@ -85,7 +85,7 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
         scheduleItem.setcFiles(boxFile(projectId, Constants.PROJECT_PRELIMINARY_STEP, Constants.FILE_CHECK));
         scheduleItem.setpFiles(boxFile(projectId, Constants.PROJECT_PRELIMINARY_STEP, Constants.FILE_MEETING_PHOTO));
         scheduleItem.setmFiles(boxFile(projectId, Constants.PROJECT_PRELIMINARY_STEP, Constants.FILE_MEETING_SUMMARY));
-        scheduleItem.setStepName("初步成果");
+        scheduleItem.setStepName("论证评审");
         scheduleItemVOS.add(scheduleItem);
 
         //项目评审
@@ -97,7 +97,7 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
         scheduleItem.setpFiles(boxFile(projectId, Constants.PROJECT_REVIEW_STEP, Constants.FILE_MEETING_PHOTO));
         scheduleItem.setmFiles(boxFile(projectId, Constants.PROJECT_REVIEW_STEP, Constants.FILE_MEETING_SUMMARY));
 
-        scheduleItem.setStepName("评审验收");
+        scheduleItem.setStepName("最终成果");
         scheduleItemVOS.add(scheduleItem);
 
         //项目最终
@@ -108,7 +108,7 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
         scheduleItem.setcFiles(boxFile(projectId, Constants.PROJECT_FINAL_STEP, Constants.FILE_CHECK));
         scheduleItem.setpFiles(boxFile(projectId, Constants.PROJECT_FINAL_STEP, Constants.FILE_MEETING_PHOTO));
         scheduleItem.setmFiles(boxFile(projectId, Constants.PROJECT_FINAL_STEP, Constants.FILE_MEETING_SUMMARY));
-        scheduleItem.setStepName("最终成果");
+        scheduleItem.setStepName("报批通过");
         scheduleItemVOS.add(scheduleItem);
 
         vo.setSchedules(scheduleItemVOS);
@@ -320,6 +320,14 @@ public class ProjectScheduleServiceImpl implements ProjectScheduleService {
             ProjectFileVO fileVO = new ProjectFileVO();
             fileVO.setId(file.getId());
             fileVO.setUrl(file.getPath());
+
+            String extension = file.getPath().substring(file.getPath().lastIndexOf(".") + 1);
+            if ("pdf".equals(extension)){
+                fileVO.setType("pdf");
+            }else{
+                fileVO.setType("img");
+            }
+
             res.add(fileVO);
         }
         return res;
